@@ -1,0 +1,61 @@
+apply plugin: 'idea'
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+group = 'x-extractor'
+archivesBaseName = 'x-extractor'
+version = '0.1'
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+// java编译的时候缺省状态下会因为中文字符而失败
+[compileJava,compileTestJava,javadoc]*.options*.encoding = 'UTF-8'
+
+buildscript {
+    repositories {
+	    mavenLocal()
+	    maven { url "https://repo.spring.io/libs-release" }
+	    mavenCentral()
+    }
+}
+
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.7'
+}
+
+idea {
+    module {
+        downloadJavadoc = false
+        downloadSources = false
+    }
+}
+
+task copyJars(type: Copy) {
+    from configurations.runtime
+    into 'dist'
+}
+
+repositories {
+    mavenCentral()
+    mavenCentral name: "erichseifert.de", artifactUrls: ["http://mvn.erichseifert.de/maven2"]
+}
+
+dependencies {
+    compile(
+            files('lib/zhinang-common-2.7.jar'),
+
+            'org.slf4j:slf4j-api:1.7.7',
+            'ch.qos.logback:logback-classic:1.1.3',
+            "com.google.guava:guava:18.0",
+
+            'org.apache.commons:commons-lang3:3.3.1',
+            'commons-cli:commons-cli:1.2',
+
+            'com.hankcs:hanlp:portable-1.2.4',
+            'net.sf.trove4j:trove4j:3.0.3',
+    )
+    
+    testCompile('junit:junit:4.11',)
+}
+
+

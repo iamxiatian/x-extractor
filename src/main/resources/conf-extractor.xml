@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!-- Do not modify this file directly. Instead, copy entries that you wish
+    to modify from this file into conf-site.xml and change them there. If conf-site.xml
+    does not already exist, create it. -->
+
+<configuration>
+    <property>
+        <name>extractor.keywords.generate</name>
+        <value>true</value>
+        <description>自动生成关键词和摘要, 不再取网页中的Ｍeta信息</description>
+    </property>
+    
+</configuration>
