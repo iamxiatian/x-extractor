@@ -32,7 +32,8 @@ public final class SegmentFactory {
         if (hanSegment == null) {
             hanSegment = new HanSegment(conf);
             try {
-                loadUserDefinedWords(hanSegment);
+                hanSegment.loadUserDefinedWords("/new_wiki_words.dic.gz");
+                hanSegment.loadUserDefinedWords("/new_tag_words.dic.gz");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -48,7 +49,8 @@ public final class SegmentFactory {
         if (ansjSegment == null) {
             ansjSegment = new AnsjSegment(conf);
             try {
-                loadUserDefinedWords(ansjSegment);
+                ansjSegment.loadUserDefinedWords("/new_wiki_words.dic.gz");
+                ansjSegment.loadUserDefinedWords("/new_tag_words.dic.gz");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -59,19 +61,4 @@ public final class SegmentFactory {
         return ansjSegment;
     }
 
-    private static void loadUserDefinedWords(Segment segment) throws IOException {
-        InputStream in = SegmentFactory.class.getResourceAsStream("/new_wiki_words.dic.gz");
-        GZIPInputStream gin = new GZIPInputStream(in);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(gin));
-        String line = null;
-        System.out.print("Loading user defined words");
-        int count = 0;
-        while ((line = reader.readLine()) != null) {
-            if(count++%2000==0) System.out.print('.');
-            if (!line.isEmpty() && segment!=null) {
-                segment.insertUserDefinedWord(line, "n", 100);
-            }
-        }
-        System.out.println(" DONE.");
-    }
 }

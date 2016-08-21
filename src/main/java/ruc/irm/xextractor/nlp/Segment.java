@@ -3,10 +3,15 @@ package ruc.irm.xextractor.nlp;
 import com.google.common.base.Joiner;
 import org.zhinang.conf.Configuration;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.zip.GZIPInputStream;
 
 /**
  * 分词和词性标记的接口，目前有两类实现：复旦大学分词程序和Stanford NLP
@@ -35,7 +40,6 @@ public interface Segment {
      *
      * @param sentence
      * @return
-     * @throws SegmentException
      */
     public List<SegWord> tag(String sentence);
 
@@ -55,6 +59,34 @@ public interface Segment {
      * @param freq
      */
     public void insertUserDefinedWord(String word, String pos, int freq);
+
+    /**
+     * 从资源路径中加载自定义词典
+     *
+     * @param resourceFileName
+     */
+    public default void loadUserDefinedWords(String resourceFileName) throws IOException {
+        System.out.println("Loading user defined words from " + resourceFileName);
+
+        InputStream in = SegmentFactory.class.getResourceAsStream(resourceFileName);
+        GZIPInputStream gin = new GZIPInputStream(in);
+        loadUserDefinedWords(gin);
+        gin.close();
+    }
+
+    public default void loadUserDefinedWords(InputStream in) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        String line = null;
+        int count = 0;
+        while ((line = reader.readLine()) != null) {
+            if(count++%2000==0) System.out.print('.');
+            if (!line.isEmpty()) {
+                insertUserDefinedWord(line, "n", 100);
+            }
+        }
+        reader.close();
+        System.out.println(" DONE.");
+    }
 
     public Entities findEntities(String sentence, boolean allowDuplicated);
 
