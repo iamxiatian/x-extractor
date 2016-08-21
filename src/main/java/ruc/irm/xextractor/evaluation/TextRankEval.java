@@ -29,17 +29,14 @@ public class TextRankEval {
     private Set<String> keywordBag = new HashSet<String>();
     private int keywordTotal = 0;
 
-    public void testDataSet() throws IOException, SAXException, ParserConfigurationException {
+    public TextRankEval() {
         //测试指定参数的运算结果
         conf.setFloat("extractor.keyword.alpha", 0.33f);
         conf.setFloat("extractor.keyword.beta", 0.34f);
         conf.setFloat("extractor.keyword.gamma", 0.33f);
         conf.setFloat("extractor.keyword.lambda", 5.0f);
         conf.setBoolean("extractor.keyword.merge.neighbor", true);
-
-        parseXmlDataSet();
     }
-
 
     /**
      * 计算一个目录下所有XML文件的准确率抽取的精度
@@ -48,8 +45,7 @@ public class TextRankEval {
      * @throws SAXException
      * @throws ParserConfigurationException
      */
-    private void parseXmlDataSet() throws IOException, SAXException, ParserConfigurationException {
-        File xmlFile = new File("data/articles.xml");
+    private void evaluateXmlDataSet(File xmlFile) throws IOException, SAXException, ParserConfigurationException {
         SAXParserFactory factory = SAXParserFactory.newInstance();
         SAXParser saxParser = factory.newSAXParser();
         SaxHandler handler = new SaxHandler();
@@ -187,7 +183,8 @@ public class TextRankEval {
 
     public static void main(String[] args) throws ParserConfigurationException, SAXException, IOException {
         TextRankEval eval = new TextRankEval();
-        eval.parseXmlDataSet();
+        File xmlFile = new File("data/articles.xml");
+        eval.evaluateXmlDataSet(xmlFile);
     }
 
 }

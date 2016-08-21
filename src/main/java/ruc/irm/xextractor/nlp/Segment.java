@@ -23,7 +23,6 @@ public interface Segment {
      *
      * @param sentence
      * @return
-     * @throws SegmentException
      */
     public List<String> segment(String sentence) ;
 
