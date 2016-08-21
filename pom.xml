@@ -111,6 +111,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.nlpcn</groupId>
+            <artifactId>nlp-lang</artifactId>
+            <version>1.6</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.ansj</groupId>
             <artifactId>ansj_seg</artifactId>
             <version>5.0.1</version>
