@@ -9,9 +9,11 @@ x-extractor是本人在研究过程中所实现的基于TextRank的关键词抽�
 # Run
 
 1. 确保计算机上已经安装Java1.8环境和gradle
+
 2. 编译代码：
 	```
 	gradle compileJava
+
 	gradle copyJars
 	```
 3. 测试：
@@ -25,3 +27,13 @@ x-extractor是本人在研究过程中所实现的基于TextRank的关键词抽�
 
 1. 夏天. 词语位置加权TextRank的关键词抽取研究. 现代图书情报技术, 2013, 29(9): 30-34.
 2. 顾益军, 夏天. 融合LDA与TextRank的关键词抽取研究. 现代图书情报技术, 2014, 29(9): 30-34.
+
+
+## Thanks
+
+本工程的部分源代码摘自开源项目,为方便编译和调整,更改了原始代码的包名称, 对用到的所有开源代码致以敬意,如需要从本代码库中移除,请留言.
+
+用到的源代码包括:
+
+1. T-SNE-Java: [[https://github.com/lejon/T-SNE-Java]] , T-SNE用于词图的可视化
+
