@@ -34,24 +34,24 @@ public class KeywordExtractor {
     private boolean useHanlpMethod = true;
     private boolean mergeNeighbor = true;
 
-    private Configuration configuration = null;
+    private Configuration conf = null;
 
     public KeywordExtractor() {
         this(ExtractConf.create());
     }
 
     public KeywordExtractor(Configuration conf) {
-        this.configuration = (conf == null) ? ExtractConf.create() : conf;
+        this.conf = (conf == null) ? ExtractConf.create() : conf;
 
-        this.useHanlpMethod = configuration.getBoolean("extractor.keyword.hanlp", false);
-        this.maxReadWordCount = configuration.getInt("extractor.keyword.valid.word.count", 2000);
+        this.useHanlpMethod = this.conf.getBoolean("extractor.keyword.hanlp", false);
+        this.maxReadWordCount = this.conf.getInt("extractor.keyword.valid.word.count", 2000);
 
-        this.alpha = configuration.getFloat("extractor.keyword.alpha", 0.1f);
-        this.beta = configuration.getFloat("extractor.keyword.beta", 0.9f);
-        this.gamma = configuration.getFloat("extractor.keyword.gamma", 0.0f);
-        this.lambda = configuration.getFloat("extractor.keyword.lambda", 30.0f);
+        this.alpha = this.conf.getFloat("extractor.keyword.alpha", 0.1f);
+        this.beta = this.conf.getFloat("extractor.keyword.beta", 0.9f);
+        this.gamma = this.conf.getFloat("extractor.keyword.gamma", 0.0f);
+        this.lambda = this.conf.getFloat("extractor.keyword.lambda", 30.0f);
 
-        this.mergeNeighbor = configuration.getBoolean("extractor.keyword.merge.neighbor", false);
+        this.mergeNeighbor = this.conf.getBoolean("extractor.keyword.merge.neighbor", false);
     }
 
     /**
@@ -76,11 +76,16 @@ public class KeywordExtractor {
             return HanLP.extractKeyword(content, topN);
         } else {
             //use improved text rank method proposed by xiatian
-            WordGraph builder = new WordGraph(alpha, beta, gamma, true);
-            builder.build(title, lambda);
-            builder.build(content, 1.0f);
+            WordGraph wordGraph = null;
+            if(conf.get("extractor.keyword.model", "word2vec").equals("word2vec")) {
+                wordGraph = new Word2VecWordGraph(alpha, beta, gamma, true);
+            } else {
+                wordGraph = new WeightedPositionWordGraph(alpha, beta, gamma, true);
+            }
+            wordGraph.build(title, lambda);
+            wordGraph.build(content, 1.0f);
 
-            PageRankGraph g = builder.makePageRankGraph();
+            PageRankGraph g = wordGraph.makePageRankGraph();
             g.iterateCalculation(20, 0.15f);
             g.quickSort();
             int count = 0;
@@ -106,7 +111,7 @@ public class KeywordExtractor {
             count = 0;
             while (keywords.size()>0){
                 String word = keywords.remove(0);
-                String merged = merge(word, builder, keywords);
+                String merged = merge(word, wordGraph, keywords);
                 filteredResult.add(merged);
                 if ((++count) == topN) {
                     break;

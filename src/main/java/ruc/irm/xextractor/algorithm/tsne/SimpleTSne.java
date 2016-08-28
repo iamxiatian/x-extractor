@@ -1,37 +1,35 @@
 package ruc.irm.xextractor.algorithm.tsne;
 
-import static com.jujutsu.utils.MatrixOps.abs;
-import static com.jujutsu.utils.MatrixOps.addColumnVector;
-import static com.jujutsu.utils.MatrixOps.addRowVector;
-import static com.jujutsu.utils.MatrixOps.assignAllLessThan;
-import static com.jujutsu.utils.MatrixOps.assignAtIndex;
-import static com.jujutsu.utils.MatrixOps.assignValuesToRow;
-import static com.jujutsu.utils.MatrixOps.biggerThan;
-import static com.jujutsu.utils.MatrixOps.concatenate;
-import static com.jujutsu.utils.MatrixOps.diag;
-import static com.jujutsu.utils.MatrixOps.equal;
-import static com.jujutsu.utils.MatrixOps.exp;
-import static com.jujutsu.utils.MatrixOps.fillMatrix;
-import static com.jujutsu.utils.MatrixOps.getValuesFromRow;
-import static com.jujutsu.utils.MatrixOps.log;
-import static com.jujutsu.utils.MatrixOps.maximum;
-import static com.jujutsu.utils.MatrixOps.mean;
-import static com.jujutsu.utils.MatrixOps.negate;
-import static com.jujutsu.utils.MatrixOps.plus;
-import static com.jujutsu.utils.MatrixOps.range;
-import static com.jujutsu.utils.MatrixOps.replaceNaN;
-import static com.jujutsu.utils.MatrixOps.rnorm;
-import static com.jujutsu.utils.MatrixOps.scalarDivide;
-import static com.jujutsu.utils.MatrixOps.scalarInverse;
-import static com.jujutsu.utils.MatrixOps.scalarMult;
-import static com.jujutsu.utils.MatrixOps.scalarPlus;
-import static com.jujutsu.utils.MatrixOps.sqrt;
-import static com.jujutsu.utils.MatrixOps.square;
-import static com.jujutsu.utils.MatrixOps.sum;
-import static com.jujutsu.utils.MatrixOps.tile;
-import static com.jujutsu.utils.MatrixOps.times;
-
-import com.jujutsu.utils.MatrixOps;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.abs;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.addColumnVector;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.addRowVector;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.assignAllLessThan;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.assignAtIndex;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.assignValuesToRow;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.biggerThan;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.concatenate;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.diag;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.equal;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.exp;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.fillMatrix;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.getValuesFromRow;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.log;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.maximum;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.mean;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.negate;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.plus;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.range;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.replaceNaN;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.rnorm;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.scalarDivide;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.scalarInverse;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.scalarMult;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.scalarPlus;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.sqrt;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.square;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.sum;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.tile;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.times;
 
 /**
 *
@@ -75,7 +73,7 @@ public class SimpleTSne implements TSne {
 		double [][] iY          = fillMatrix(n,no_dims,0.0);
 		double [][] gains       = fillMatrix(n,no_dims,1.0);
 		
-		// Compute P-values
+		// Compute P-features
 		double [][] P = x2p(X, 1e-5, perplexity).P;
 		P = plus(P , mo.transpose(P));
 		P = scalarDivide(P,sum(P));
@@ -127,7 +125,7 @@ public class SimpleTSne implements TSne {
 				System.out.println("Iteration " + (iter + 1));
 			}
 
-			// Stop lying about P-values
+			// Stop lying about P-features
 			if (iter == 100)
 				P = scalarDivide(P , 4);
 		}
@@ -160,7 +158,7 @@ public class SimpleTSne implements TSne {
 		System.out.println("Starting x2p...");
 		for (int i = 0; i < n; i++) {
 			if (i % 500 == 0)
-				System.out.println("Computing P-values for point " + i + " of " + n + "...");
+				System.out.println("Computing P-features for point " + i + " of " + n + "...");
 			double betamin = Double.NEGATIVE_INFINITY;
 			double betamax = Double.POSITIVE_INFINITY;
 			double [][] Di = getValuesFromRow(D, i,concatenate(range(0,i),range(i+1,n)));

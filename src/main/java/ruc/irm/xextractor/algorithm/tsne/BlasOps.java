@@ -28,11 +28,11 @@ public class BlasOps {
 	}
 
 	/**
-	 * Returns a new matrix of booleans where true is set if the values to the two matrices are
+	 * Returns a new matrix of booleans where true is set if the features to the two matrices are
 	 * the same at that index
 	 * @param matrix1
 	 * @param matrix2
-	 * @return new matrix with booelans with values matrix1[i,j] == matrix2[i,j]
+	 * @return new matrix with booelans with features matrix1[i,j] == matrix2[i,j]
 	 */
 	public static boolean [][] equal(DoubleMatrix matrix1, DoubleMatrix matrix2) {
 		boolean [][] equals = new boolean[matrix1.rows][matrix1.columns];
@@ -50,7 +50,7 @@ public class BlasOps {
 		return equals;
 	}
 	/**
-	 * All values in matrix that is less than <code>lessthan</code> is assigned
+	 * All features in matrix that is less than <code>lessthan</code> is assigned
 	 * the value <code>assign</code>
 	 * @param matrix
 	 * @param lessthan
@@ -66,9 +66,9 @@ public class BlasOps {
 	}
 
 	/**
-	 * Returns a new matrix with values that are the log of the input matrix
+	 * Returns a new matrix with features that are the log of the input matrix
 	 * @param matrix
-	 * @return  same matrix with values log'ed
+	 * @return  same matrix with features log'ed
 	 */
 	public static DoubleMatrix log(DoubleMatrix m1) {
 		DoubleMatrix matrix = m1.dup();
@@ -79,11 +79,11 @@ public class BlasOps {
 	}
 
 	/**
-	 * Returns a new matrix with values that are the log of the input matrix
+	 * Returns a new matrix with features that are the log of the input matrix
 	 * @param matrix
 	 * @param infAsZero treat +- Infinity as zero, i.e replaces Infinity with 0.0
 	 * if set to true
-	 * @return  same matrix with values log'ed
+	 * @return  same matrix with features log'ed
 	 */
 	public static DoubleMatrix log(DoubleMatrix m1, boolean infAsZero) {
 		DoubleMatrix matrix = m1.dup();
@@ -135,7 +135,7 @@ public class BlasOps {
 	 * bigger than value
 	 * @param matrix
 	 * @param value
-	 * @return new matrix with booelans with values matrix1[i,j] == matrix2[i,j]
+	 * @return new matrix with booelans with features matrix1[i,j] == matrix2[i,j]
 	 */
 	public static boolean [][] biggerThan(DoubleMatrix matrix, double value) {
 		boolean [][] equals = new boolean[matrix.rows][matrix.columns];
@@ -163,9 +163,9 @@ public class BlasOps {
 
 	// Unit Tested
 	/**
-	 * Returns a new matrix with values exponentiated
+	 * Returns a new matrix with features exponentiated
 	 * @param matrix
-	 * @return new matrix with values exponentiated
+	 * @return new matrix with features exponentiated
 	 */
 	public static DoubleMatrix exp(DoubleMatrix m1) {
 		DoubleMatrix matrix = m1.dup();
@@ -195,7 +195,7 @@ public class BlasOps {
 	/**
 	 * Returns new vetcor with vals sqrt'ed
 	 * @param vector
-	 * @return new vector with values sqrt'ed
+	 * @return new vector with features sqrt'ed
 	 */
 	public static DoubleMatrix sqrt(DoubleMatrix m1) {
 		DoubleMatrix matrix = m1.dup();

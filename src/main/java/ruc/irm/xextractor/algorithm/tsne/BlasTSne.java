@@ -1,26 +1,23 @@
 package ruc.irm.xextractor.algorithm.tsne;
 
-import static com.jujutsu.utils.MatrixOps.addColumnVector;
-import static com.jujutsu.utils.MatrixOps.addRowVector;
-import static com.jujutsu.utils.MatrixOps.assignValuesToRow;
-import static com.jujutsu.utils.MatrixOps.concatenate;
-import static com.jujutsu.utils.MatrixOps.equal;
-import static com.jujutsu.utils.MatrixOps.fillMatrix;
-import static com.jujutsu.utils.MatrixOps.getValuesFromRow;
-import static com.jujutsu.utils.MatrixOps.mean;
-import static com.jujutsu.utils.MatrixOps.negate;
-import static com.jujutsu.utils.MatrixOps.range;
-import static com.jujutsu.utils.MatrixOps.scalarInverse;
-import static com.jujutsu.utils.MatrixOps.scalarMult;
-import static com.jujutsu.utils.MatrixOps.sqrt;
-import static com.jujutsu.utils.MatrixOps.square;
-import static com.jujutsu.utils.MatrixOps.sum;
-import static com.jujutsu.utils.MatrixOps.times;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.addColumnVector;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.addRowVector;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.assignValuesToRow;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.concatenate;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.equal;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.fillMatrix;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.getValuesFromRow;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.mean;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.negate;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.range;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.scalarInverse;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.scalarMult;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.sqrt;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.square;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.sum;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.times;
 
 import org.jblas.DoubleMatrix;
-
-import com.jujutsu.utils.BlasOps;
-import com.jujutsu.utils.MatrixOps;
 
 /**
  *
@@ -62,7 +59,7 @@ public class BlasTSne implements TSne {
 		DoubleMatrix iY          = DoubleMatrix.zeros(n,no_dims);
 		DoubleMatrix gains       = DoubleMatrix.ones(n,no_dims);
 		
-		// Compute P-values
+		// Compute P-features
 		double [][] Pt = x2p(X, 1e-5, perplexity).P;
 		DoubleMatrix P = new DoubleMatrix(Pt);
 		P = P.add(P.transpose());
@@ -124,7 +121,7 @@ public class BlasTSne implements TSne {
 				System.out.println("Iteration " + iter);
 			}
 
-			// Stop lying about P-values
+			// Stop lying about P-features
 			if (iter == 100)
 				P = P.div(4);
 		}
@@ -158,7 +155,7 @@ public class BlasTSne implements TSne {
 		System.out.println("Starting x2p...");
 		for (int i = 0; i < n; i++) {
 			if (i % 500 == 0)
-				System.out.println("Computing P-values for point " + i + " of " + n + "...");
+				System.out.println("Computing P-features for point " + i + " of " + n + "...");
 			double betamin = Double.NEGATIVE_INFINITY;
 			double betamax = Double.POSITIVE_INFINITY;
 			double [][] Di = getValuesFromRow(D, i,concatenate(range(0,i),range(i+1,n)));

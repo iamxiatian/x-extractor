@@ -19,11 +19,29 @@ public class Word2Vec {
     private int words;
     private int size;
     private int topNSize = 40;
+    private static Map<String, Word2Vec> instances = new HashMap<>();
+
+    private Word2Vec() {
+
+    }
+
+    public static Word2Vec getInstance(String modelPath) {
+        if (!instances.containsKey(modelPath)) {
+            Word2Vec word2Vec = new Word2Vec();
+            try {
+                word2Vec.loadModel(modelPath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            instances.put(modelPath, word2Vec);
+        }
+        return instances.get(modelPath);
+    }
 
     /**
      * Load trained model
      */
-    public void loadModel(String path) throws IOException {
+    public Word2Vec loadModel(String path) throws IOException {
         DataInputStream dis = null;
         BufferedInputStream bis = null;
         double len = 0;
@@ -61,6 +79,8 @@ public class Word2Vec {
             bis.close();
             dis.close();
         }
+
+        return this;
     }
 
     private static final int MAX_SIZE = 50;
@@ -69,6 +89,16 @@ public class Word2Vec {
     public Set<WordEntry> distance(String words) {
         List<String> list = Arrays.asList(words.split(" "));
         return distance(list);
+    }
+
+    public float similarity(String word1, String word2) {
+        float[] v1 = getWordVector(word1);
+        float[] v2 = getWordVector(word2);
+        if (v1 == null || v2 == null) {
+            return 0;
+        } else {
+            return similarity(v1, v2);
+        }
     }
 
     public float similarity(float[] vector1, float[] vector2) {
@@ -145,15 +175,15 @@ public class Word2Vec {
         return new TreeSet<WordEntry>(wordEntrys);
     }
 
-    private void insertTopN(String name, float score, final List<WordEntry> wordsEntrys) {
-        if (wordsEntrys.size() < topNSize) {
-            wordsEntrys.add(new WordEntry(name, score));
+    private void insertTopN(String name, float score, final List<WordEntry> wordEntries) {
+        if (wordEntries.size() < topNSize) {
+            wordEntries.add(new WordEntry(name, score));
             return;
         }
         float min = Float.MAX_VALUE;
         int minOffe = 0;
         for (int i = 0; i < topNSize; i++) {
-            WordEntry wordEntry = wordsEntrys.get(i);
+            WordEntry wordEntry = wordEntries.get(i);
             if (min > wordEntry.score) {
                 min = wordEntry.score;
                 minOffe = i;
@@ -161,7 +191,7 @@ public class Word2Vec {
         }
 
         if (score > min) {
-            wordsEntrys.set(minOffe, new WordEntry(name, score));
+            wordEntries.set(minOffe, new WordEntry(name, score));
         }
 
     }
@@ -338,6 +368,7 @@ public class Word2Vec {
         options.addOption(new Option("f", true, "model file"));
         options.addOption(new Option("d", false, "test word distance"));
         options.addOption(new Option("a", false, "test word analogy"));
+        options.addOption(new Option("sim", false, "test similarity"));
         options.addOption("h", "help", false, "print help for the command.");
 
         CommandLine cmdLine = parser.parse(options, args);
@@ -388,6 +419,23 @@ public class Word2Vec {
                         System.out.println(entry.name + "\t" + entry.score);
                     }
                 }
+            }
+        } else if(cmdLine.hasOption("sim")){
+            System.out.println("Start similarity test(Type EXIT to exit)...");
+            while (true) {
+                System.out.print("Enter first word or sentence:");
+                String word1 = scanner.nextLine();
+                if (word1.equalsIgnoreCase("exit")) {
+                    return;
+                }
+                System.out.print("Enter second word or sentence:");
+                String word2 = scanner.nextLine();
+                if (word2.equalsIgnoreCase("exit")) {
+                    return;
+                }
+
+                double sim = vec.similarity(word1, word2);
+                System.out.println("similarity:" + sim);
             }
         } else {
             System.out.println("Start distance test(Type EXIT to exit)...");

@@ -24,7 +24,7 @@ public class EjmlOps {
 	 * @param fastTSne TODO
 	 * @param matrix
 	 * @param value
-	 * @return new matrix with booelans with values matrix1[i,j] == matrix2[i,j]
+	 * @return new matrix with booelans with features matrix1[i,j] == matrix2[i,j]
 	 */
 	public static boolean [][] biggerThan(DenseMatrix64F matrix, double value) {
 		boolean [][] equals = new boolean[matrix.numRows][matrix.numCols];
@@ -37,7 +37,7 @@ public class EjmlOps {
 	}
 
 	/**
-	 * Sets the diagonal of 'diag' to the values of 'diagElements' as long 
+	 * Sets the diagonal of 'diag' to the features of 'diagElements' as long
 	 * as possible (i.e while there are elements left in diag and the dim of 'diag'
 	 * is big enough...
 	 * Note: This method ONLY affect the diagonal elements the others are left as
@@ -55,13 +55,13 @@ public class EjmlOps {
 
 	/**
 	 * <p>
-	 * Sets the data of<code>target</code> to that of the input matrix with the values and shape defined by the 2D array 'data'.
+	 * Sets the data of<code>target</code> to that of the input matrix with the features and shape defined by the 2D array 'data'.
 	 * It is assumed that 'data' has a row-major formatting:<br>
 	 *  <br>
 	 * data[ row ][ column ]
 	 * </p>
 	 * @param fastTSne TODO
-	 * @param target 2D DenseMatrix. Modified to contain the values in 'data'.
+	 * @param target 2D DenseMatrix. Modified to contain the features in 'data'.
 	 * @param data 2D array representation of the matrix. Not modified.
 	 */
 	public static void setData(DenseMatrix64F target, double[][] data) {
@@ -129,7 +129,7 @@ public class EjmlOps {
 	}
 
 	/**
-	 * All values in matrix that is less than <code>lessthan</code> is assigned
+	 * All features in matrix that is less than <code>lessthan</code> is assigned
 	 * the value <code>assign</code>
 	 * @param matrix
 	 * @param lessthan

@@ -1,142 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<configuration>
-    <substitutionProperty name="log.base" value="./logs/zhinang"/>
-
-    <jmxConfigurator/>
+<configuration debug="false">
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>%date [%thread] %-5level %logger{80}[%line] - %msg%n</pattern>
+            <Pattern>
+                %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
+            </Pattern>
         </layout>
     </appender>
 
-    <!-- 文件输出日志 (文件大小策略进行文件输出，超过指定大小对文件备份)-->
-    <appender name="FILE-DEFAULT" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <Encoding>UTF-8</Encoding>
-        <File>${log.base}-default.log</File>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <FileNamePattern>${log.base}-default.%d{yyyy-MM-dd}.log.zip</FileNamePattern>
-        </rollingPolicy>
-
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <MaxFileSize>50MB</MaxFileSize>
-        </triggeringPolicy>
-
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>%date [%thread] %-5level %logger{80}[%line] - %msg%n</pattern>
-        </layout>
-    </appender>
-
-    <!-- 文件输出日志 (文件大小策略进行文件输出，超过指定大小对文件备份)-->
-    <appender name="SPIDER-GENERATE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <Encoding>UTF-8</Encoding>
-        <File>logs/spider-generate.log</File>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <FileNamePattern>logs/spider-generate.%d{yyyy-MM-dd}.log.zip</FileNamePattern>
-        </rollingPolicy>
-
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <MaxFileSize>50MB</MaxFileSize>
-        </triggeringPolicy>
-
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>%date [%thread] %-5level %logger{80}[%line] - %msg%n</pattern>
-        </layout>
-    </appender>
-
-    <!-- 文件输出日志 (文件大小策略进行文件输出，超过指定大小对文件备份)-->
-    <appender name="SPIDER-INJECT" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <Encoding>UTF-8</Encoding>
-        <File>logs/spider-inject.log</File>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <FileNamePattern>logs/spider-inject.%d{yyyy-MM-dd}.log.zip</FileNamePattern>
-        </rollingPolicy>
-
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <MaxFileSize>50MB</MaxFileSize>
-        </triggeringPolicy>
-
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>%date [%thread] %-5level %logger{80}[%line] - %msg%n</pattern>
-        </layout>
-    </appender>
-
-    <!-- 文件输出日志 (文件大小策略进行文件输出，超过指定大小对文件备份)-->
-    <appender name="SPIDER-FETCH" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <Encoding>UTF-8</Encoding>
-        <File>logs/spider-fetch.log</File>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <FileNamePattern>logs/spider-fetch.%d{yyyy-MM-dd}.log.zip</FileNamePattern>
-        </rollingPolicy>
-
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <MaxFileSize>50MB</MaxFileSize>
-        </triggeringPolicy>
-
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>%date [%thread] %-5level %logger{80}[%line] - %msg%n</pattern>
-        </layout>
-    </appender>
-
-    <!--
-    <appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
-        <discriminator>
-            <key>type</key>
-            <defaultValue>default</defaultValue>
-        </discriminator>
-        <sift>
-            <appender name="FILE-${type}" class="ch.qos.logback.core.rolling.RollingFileAppender">
-                <Encoding>UTF-8</Encoding>
-                <File>logs/zhinang-${type}.log</File>
-                <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-                    <FileNamePattern>logs/zhinang-${type}.%d{yyyy-MM-dd}.log.zip</FileNamePattern>
-                </rollingPolicy>
-
-                <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-                    <MaxFileSize>50MB</MaxFileSize>
-                </triggeringPolicy>
-
-                <layout class="ch.qos.logback.classic.PatternLayout">
-                    <pattern>%date [%thread] %-5level %logger{80}[%line] - %msg%n</pattern>
-                </layout>
-            </appender>
-        </sift>
-    </appender>
-    -->
-
-    <!-- 需要记录日志的包 -->
-    <logger name="org.zhinang">
-        <level value="DEBUG"/>
-        <appender-ref ref="STDOUT"/>
-        <appender-ref ref="FILE-DEFAULT"/>
+    <logger name="ruc.irm.xextractor" level="debug" additivity="false">
+        <appender-ref ref="STDOUT" />
     </logger>
 
-    <logger name="org.zhinang.spider.fetch.Injector">
-        <level value="DEBUG"/>
-        <appender-ref ref="STDOUT"/>
-        <appender-ref ref="SPIDER-INJECT"/>
-    </logger>
-
-    <logger name="org.zhinang.spider.fetch.Generator">
-        <level value="DEBUG"/>
-        <appender-ref ref="STDOUT"/>
-        <appender-ref ref="SPIDER-GENERATE"/>
-    </logger>
-
-    <logger name="org.zhinang.spider.fetch.Fetcher">
-        <level value="INFO"/>
-        <appender-ref ref="STDOUT"/>
-        <appender-ref ref="SPIDER-FETCH"/>
-    </logger>
-
-    <logger name="org.apache">
-        <level value="WARN"/>
-    </logger>
-
-    <root>
-        <level value="WARN"/>
-        <appender-ref ref="STDOUT"/>
-        <appender-ref ref="FILE-DEFAULT"/>
+    <root level="error">
+        <appender-ref ref="STDOUT" />
     </root>
 </configuration>

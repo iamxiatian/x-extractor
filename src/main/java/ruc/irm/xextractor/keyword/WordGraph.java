@@ -1,5 +1,7 @@
 package ruc.irm.xextractor.keyword;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zhinang.conf.Configuration;
 import org.zhinang.util.ds.KeyValuePair;
 import ruc.irm.xextractor.nlp.SegWord;
@@ -9,26 +11,20 @@ import ruc.irm.xextractor.nlp.SegmentFactory;
 import java.util.*;
 
 /**
- * 关键词词图
+ * 关键词词图的基类，目前有如下实现：
  *
- * 参数说明请参考：夏天. 词语位置加权TextRank的关键词抽取研究. 现代图书情报技术, 2013, 29(9): 30-34.
- * User: xiatian
- * Date: 3/10/13 4:07 PM
+ * 词语位置加权的词图实现WeightedPositionWordGraph, 参考：夏天. 词语位置加权TextRank的关键词抽取研究. 现代图书情报技术, 2013, 29(9): 30-34.
+ *
+ * @author 夏天
+ * @organization 中国人民大学信息资源管理学院
  */
-public class WordGraph {
-    private Segment segment = null;
+public abstract class WordGraph {
+    protected Logger LOG = LoggerFactory.getLogger(this.getClass());
+
+    protected Segment segment = null;
 
     //是否在后面的词语中加上指向前面词语的链接关系
-    private boolean linkBack = true;
-
-    //词语的覆盖影响力因子
-    private float paramAlpha = 0.1f;
-
-    //词语的位置影响力因子
-    private float paramBeta = 0.8f;
-
-    //词语的频度影响力因子
-    private float paramGamma = 0.1f;
+    protected boolean linkBack = true;
 
     /**
      * 如果读取的单词数量超过该值，则不再处理以后的内容，以避免文本过长导致计算速度过慢
@@ -40,20 +36,12 @@ public class WordGraph {
      */
     private int readWordCount = 0;
 
-    private Map<String, WordNode> wordNodeMap = new HashMap<String, WordNode>();
+    protected Map<String, WordNode> wordNodeMap = new HashMap<String, WordNode>();
 
     public WordGraph() {
         this.segment = SegmentFactory.getSegment(new Configuration());
     }
 
-    public WordGraph(float paramAlpha, float paramBeta, float paramGamma, boolean linkBack) {
-        this();
-
-        this.paramAlpha = paramAlpha;
-        this.paramBeta = paramBeta;
-        this.paramGamma = paramGamma;
-        this.linkBack = linkBack;
-    }
 
     /**
      * 直接通过传入的词语和重要性列表构建关键词图
@@ -142,9 +130,14 @@ public class WordGraph {
                     return;
                 }
 
+                if(LOG.isDebugEnabled()) {
+                    System.out.print(segWord.word + "/" + segWord.pos + " ");
+                }
+
                 if (wordNode == null) {
                     //如果额外指定了权重，则使用额外指定的权重代替函数传入的权重
                     float specifiedWeight = SpecifiedWeight.getWordWeight(segWord.word, 0.0f);
+
                     if (specifiedWeight < importance) {
                         specifiedWeight = importance;
                     }
@@ -152,7 +145,7 @@ public class WordGraph {
                     if(segWord.pos.equals("ns") || segWord.equals("nr")) {
                         specifiedWeight = specifiedWeight*1.3f;
                     } else if (segWord.pos.startsWith("v")) {
-                        specifiedWeight *= 0.8f;
+                        specifiedWeight *= 0.5f;
                     }
                     wordNode = new WordNode(segWord.word, segWord.pos, 0, specifiedWeight);
                     wordNodeMap.put(segWord.word, wordNode);
@@ -183,9 +176,13 @@ public class WordGraph {
                 lastPosition = i;
             }
 
-//            if(segWord.pos.equals("PU")) {
+//            if(segWord.features.equals("PU")) {
 //                lastPosition = -1; //以句子为单位
 //            }
+        }
+
+        if (LOG.isDebugEnabled()) {
+            System.out.println();
         }
 
     }
@@ -193,55 +190,11 @@ public class WordGraph {
     /**
      * 该步处理用于删除过多的WordNode，仅保留出现频次在前100的词语，以便加快处理速度
      */
-    private void shrink() {
+    void shrink() {
 
     }
 
-    public PageRankGraph makePageRankGraph() {
-        final String[] words = new String[wordNodeMap.size()];
-        double[] values = new double[wordNodeMap.size()];
-        final double[][] matrix = new double[wordNodeMap.size()][wordNodeMap.size()];
-
-        int i = 0;
-        for (Map.Entry<String, WordNode> entry : wordNodeMap.entrySet()) {
-            words[i] = entry.getKey();
-            values[i] = 1.0f / wordNodeMap.size();
-            i++;
-        }
-
-        for (i = 0; i < words.length; i++) {
-            String wordFrom = words[i];
-
-            WordNode nodeFrom = wordNodeMap.get(wordFrom);
-            if (nodeFrom == null) {
-                continue;
-            }
-
-            Map<String, Integer> adjacentWords = nodeFrom.getAdjacentWords();
-
-            float totalImportance = 0.0f;    //相邻节点的节点重要性之和
-            int totalOccurred = 0;       //相邻节点出现的总频度
-            for (String w : adjacentWords.keySet()) {
-                totalImportance += wordNodeMap.get(w).getImportance();
-                totalOccurred += wordNodeMap.get(w).getCount();
-            }
-
-            for (int j = 0; j < words.length; j++) {
-                String wordTo = words[j];
-                WordNode nodeTo = wordNodeMap.get(wordTo);
-
-                if (adjacentWords.containsKey(wordTo)) {
-                    //计算i到j的转移概率
-                    double partA = 1.0f / adjacentWords.size();
-                    double partB = nodeTo.getImportance() / totalImportance;
-                    double partC = nodeTo.getCount() * 1.0f / totalOccurred;
-                    matrix[j][i] = partA * paramAlpha + partB * paramBeta + partC * paramGamma;
-                }
-            }
-        }
-
-        return new PageRankGraph(words, values, matrix);
-    }
+    public abstract PageRankGraph makePageRankGraph();
 
     /**
      * 设置最大可以读取的词语数量

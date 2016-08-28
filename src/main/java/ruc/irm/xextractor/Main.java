@@ -4,6 +4,8 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.io.Files;
 import org.apache.commons.cli.*;
+import org.zhinang.conf.Configuration;
+import ruc.irm.xextractor.commons.ExtractConf;
 import ruc.irm.xextractor.keyword.KeywordExtractor;
 
 import java.io.File;
@@ -22,14 +24,20 @@ public class Main {
         CommandLineParser parser = new PosixParser();
         Options options = new Options();
         options.addOption(new Option("f", true, "the article file to extract keywords."));
+        options.addOption(new Option("m", true, "Extract method: w2v for word2vec or features for weighted position."));
 
-        KeywordExtractor extractor = new KeywordExtractor();
-
-        CommandLine commandLine = parser.parse(options, args);
+        Configuration conf = ExtractConf.create();
+           CommandLine commandLine = parser.parse(options, args);
         if (!commandLine.hasOption("f")) {
             helpFormatter.printHelp("参数错误！", options);
             return;
         }
+
+        if (commandLine.hasOption("m")) {
+            conf.set("extractor.keyword.model", commandLine.getOptionValue("m"));
+        }
+
+
         File f = new File(commandLine.getOptionValue("f"));
         if(!f.exists()) {
             System.out.println("文件不存在！" + f.getAbsolutePath());
@@ -42,6 +50,7 @@ public class Main {
             text.append(lines.get(i)).append("\n");
         }
 
+        KeywordExtractor extractor = new KeywordExtractor(conf);
         String keywords = extractor.extractAsString(title, text.toString(), 5);
         System.out.println("抽取的关键词为：" + keywords);
     }

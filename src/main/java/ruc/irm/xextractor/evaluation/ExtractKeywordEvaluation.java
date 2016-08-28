@@ -53,10 +53,11 @@ public class ExtractKeywordEvaluation {
 
         options.addOption(new Option("gtw", false, "根据标签词语生成新词文件"));
         options.addOption(new Option("eval", false, "遍历保存到XML中的测试文章,进行关键词抽取测试"));
+        options.addOption(new Option("id", true, "对指定Id的文章进行关键词抽取，输出排序列表"));
         options.addOption("h", "help", false, "print help for the command.");
 
         CommandLine cmdLine = parser.parse(options, args);
-        if (cmdLine.hasOption("h")) {
+        if (cmdLine.hasOption("h") || cmdLine.getOptions().length==0) {
             helpFormatter.printHelp(formatString, options);
             return;
         }
@@ -64,9 +65,7 @@ public class ExtractKeywordEvaluation {
         if (cmdLine.hasOption("gtw")) {
             generateTagWords(new File("data/articles.xml"));
             return;
-        }
-
-        if(cmdLine.hasOption("eval")) {
+        } else if(cmdLine.hasOption("eval")) {
             Configuration conf = new Configuration();
             KeywordExtractor extractor = new KeywordExtractor(conf);
 
@@ -81,6 +80,33 @@ public class ExtractKeywordEvaluation {
 
                 List<String> keywords = extractor.extractAsList(article.title, article.content, 6);
                 System.out.println(article.id + "\t" + article.title + "\t" + article.tags + "\t" + keywords);
+            }
+        } else if (cmdLine.hasOption("id")) {
+            int id = Integer.parseInt(cmdLine.getOptionValue("id"));
+            Configuration conf = new Configuration();
+            KeywordExtractor extractor = new KeywordExtractor(conf);
+
+            Configuration conf2 = new Configuration();
+            conf2.set("extractor.keyword.model", "position");
+            KeywordExtractor extractor2 = new KeywordExtractor(conf2);
+
+            XmlArticleReader reader = new XmlArticleReader();
+            File f = new File("data/articles.xml");
+
+            reader.open(f);
+
+            while (reader.hasNext()) {
+                XmlArticleReader.Article article = reader.next();
+                if (article.id == id) {
+                    List<String> keywords = extractor.extractAsList(article.title, article.content, 1000);
+                    List<String> keywords2 = extractor2.extractAsList(article.title, article.content, 1000);
+                    System.out.println(article.id + "\t" + article.title + "\t" + article.tags);
+                    for (int i=0; i<keywords.size(); i++) {
+                        System.out.println(i + "\t" + keywords.get(i) + "\t" + keywords2.get(i));
+                    }
+                    break;
+                }
+
             }
         }
     }

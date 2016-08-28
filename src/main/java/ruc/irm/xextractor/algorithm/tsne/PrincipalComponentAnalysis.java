@@ -67,7 +67,7 @@ public class PrincipalComponentAnalysis {
     private DenseMatrix64F A = new DenseMatrix64F(1,1);
     private int sampleIndex;
 
-    // mean values of each element across all the samples
+    // mean features of each element across all the samples
     double mean[];
 
     public PrincipalComponentAnalysis() {
@@ -146,7 +146,7 @@ public class PrincipalComponentAnalysis {
         V_t = svd.getV(null,true);
         DenseMatrix64F W = svd.getW(null);
 
-        // Singular values are in an arbitrary order initially
+        // Singular features are in an arbitrary order initially
         SingularOps.descendingOrder(null,false,W,V_t,true);
 
         // strip off unneeded components and find the basis
@@ -241,7 +241,7 @@ public class PrincipalComponentAnalysis {
 
     /**
      * Computes the dot product of each basis vector against the sample.  Can be used as a measure
-     * for membership in the training sample set.  High values correspond to a better fit.
+     * for membership in the training sample set.  High features correspond to a better fit.
      *
      * @param sample Sample of original data.
      * @return Higher value indicates it is more likely to be a member of input dataset.

@@ -1,21 +1,21 @@
 package ruc.irm.xextractor.algorithm.tsne;
 
-import static com.jujutsu.utils.EjmlOps.addRowVector;
-import static com.jujutsu.utils.EjmlOps.assignAllLessThan;
-import static com.jujutsu.utils.EjmlOps.assignAtIndex;
-import static com.jujutsu.utils.EjmlOps.biggerThan;
-import static com.jujutsu.utils.EjmlOps.colMean;
-import static com.jujutsu.utils.EjmlOps.maximize;
-import static com.jujutsu.utils.EjmlOps.replaceNaN;
-import static com.jujutsu.utils.EjmlOps.setData;
-import static com.jujutsu.utils.EjmlOps.setDiag;
-import static com.jujutsu.utils.EjmlOps.tile;
-import static com.jujutsu.utils.MatrixOps.abs;
-import static com.jujutsu.utils.MatrixOps.equal;
-import static com.jujutsu.utils.MatrixOps.fillMatrix;
-import static com.jujutsu.utils.MatrixOps.negate;
-import static com.jujutsu.utils.MatrixOps.range;
-import static com.jujutsu.utils.MatrixOps.rnorm;
+import static ruc.irm.xextractor.algorithm.tsne.EjmlOps.addRowVector;
+import static ruc.irm.xextractor.algorithm.tsne.EjmlOps.assignAllLessThan;
+import static ruc.irm.xextractor.algorithm.tsne.EjmlOps.assignAtIndex;
+import static ruc.irm.xextractor.algorithm.tsne.EjmlOps.biggerThan;
+import static ruc.irm.xextractor.algorithm.tsne.EjmlOps.colMean;
+import static ruc.irm.xextractor.algorithm.tsne.EjmlOps.maximize;
+import static ruc.irm.xextractor.algorithm.tsne.EjmlOps.replaceNaN;
+import static ruc.irm.xextractor.algorithm.tsne.EjmlOps.setData;
+import static ruc.irm.xextractor.algorithm.tsne.EjmlOps.setDiag;
+import static ruc.irm.xextractor.algorithm.tsne.EjmlOps.tile;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.abs;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.equal;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.fillMatrix;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.negate;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.range;
+import static ruc.irm.xextractor.algorithm.tsne.MatrixOps.rnorm;
 import static org.ejml.ops.CommonOps.add;
 import static org.ejml.ops.CommonOps.addEquals;
 import static org.ejml.ops.CommonOps.divide;
@@ -34,7 +34,6 @@ import static org.ejml.ops.CommonOps.transpose;
 
 import org.ejml.data.DenseMatrix64F;
 
-import com.jujutsu.utils.MatrixOps;
 /**
  *
  * Author: Leif Jonsson (leif.jonsson@gmail.com)
@@ -71,7 +70,7 @@ public class MemOptimizedTSne extends FastTSne {
 		DenseMatrix64F btNeg    = new DenseMatrix64F(n,no_dims);
 		DenseMatrix64F bt       = new DenseMatrix64F(n,no_dims);
 		
-		// Compute P-values
+		// Compute P-features
 		DenseMatrix64F P        = new DenseMatrix64F(x2p(X, 1e-5, perplexity).P); // P = n x n
 		DenseMatrix64F Psized   = new DenseMatrix64F(P.numRows,P.numCols);        // L = n x n
 		DenseMatrix64F diag     = new DenseMatrix64F(fillMatrix(Psized.numRows,Psized.numCols,0.0));
@@ -169,7 +168,7 @@ public class MemOptimizedTSne extends FastTSne {
 				System.out.println("Iteration " + iter);
 			}
 
-			// Stop lying about P-values
+			// Stop lying about P-features
 			if (iter == 100)
 				divide(P , 4);
 		}

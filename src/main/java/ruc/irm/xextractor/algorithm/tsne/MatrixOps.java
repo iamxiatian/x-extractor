@@ -358,9 +358,9 @@ public class MatrixOps {
 
 	// Unit Tested
 	/**
-	 * Returns a new matrix with values exponentiated
+	 * Returns a new matrix with features exponentiated
 	 * @param matrix
-	 * @return new matrix with values exponentiated
+	 * @return new matrix with features exponentiated
 	 */
 	public static double [][] exp(double [][] m1) {
 		double[][] matrix = new double[m1.length][m1[0].length];
@@ -376,7 +376,7 @@ public class MatrixOps {
 	/**
 	 * Returns new vetcor with vals sqrt'ed
 	 * @param vector
-	 * @return new vector with values sqrt'ed
+	 * @return new vector with features sqrt'ed
 	 */
 	public static double [] sqrt(double [] v1) {
 		double [] vector = new double[v1.length];
@@ -389,7 +389,7 @@ public class MatrixOps {
 	// Unit Tested
 	/**
 	 * @param vector
-	 * @return mean of values in vector
+	 * @return mean of features in vector
 	 */
 	public static double mean(double [] vector) {
 		double sum = 0.0;
@@ -401,9 +401,9 @@ public class MatrixOps {
 
 	// Unit Tested
 	/**
-	 * Returns a new matrix with values that are the log of the input matrix
+	 * Returns a new matrix with features that are the log of the input matrix
 	 * @param matrix
-	 * @return  same matrix with values log'ed
+	 * @return  same matrix with features log'ed
 	 */
 	public static double [][] log(double [][] m1) {
 		double[][] matrix = new double[m1.length][m1[0].length];
@@ -416,10 +416,10 @@ public class MatrixOps {
 	}
 
 	/**
-	 * Returns a new matrix with values that are taken to the power of the input matrix
+	 * Returns a new matrix with features that are taken to the power of the input matrix
 	 * @param matrix
 	 * @param power
-	 * @return  same matrix with values pow'ed
+	 * @return  same matrix with features pow'ed
 	 */
 	public static double [][] pow(double [][] m1, double power) {
 		double[][] matrix = new double[m1.length][m1[0].length];
@@ -432,10 +432,10 @@ public class MatrixOps {
 	}
 
 	/**
-	 * Returns a new matrix with values that are taken to the power of the input matrix
+	 * Returns a new matrix with features that are taken to the power of the input matrix
 	 * @param matrix
 	 * @param power
-	 * @return  same matrix with values pow'ed
+	 * @return  same matrix with features pow'ed
 	 */
 	public static double [] pow(double [] m1, double power) {
 		double[] matrix = new double[m1.length];
@@ -446,11 +446,11 @@ public class MatrixOps {
 	}
 
 	/**
-	 * Returns a new matrix with values that are the log of the input matrix
+	 * Returns a new matrix with features that are the log of the input matrix
 	 * @param matrix
 	 * @param infAsZero treat +- Infinity as zero, i.e replaces Infinity with 0.0
 	 * if set to true
-	 * @return  same matrix with values log'ed
+	 * @return  same matrix with features log'ed
 	 */
 	public static double [][] log(double [][] m1, boolean infAsZero) {
 		double[][] matrix = new double[m1.length][m1[0].length];
@@ -495,7 +495,7 @@ public class MatrixOps {
 	/**
 	 * @param m
 	 * @param n
-	 * @return new 2D matrix with normal random values with mean 0 and std. dev 1
+	 * @return new 2D matrix with normal random features with mean 0 and std. dev 1
 	 */
 	public static double[][] rnorm(int m, int n) {
 		double[][] array = new double[m][n];
@@ -539,11 +539,11 @@ public class MatrixOps {
 
 	// Unit Tested
 	/**
-	 * Returns a new matrix of booleans where true is set if the values to the two matrices are
+	 * Returns a new matrix of booleans where true is set if the features to the two matrices are
 	 * the same at that index
 	 * @param matrix1
 	 * @param matrix2
-	 * @return new matrix with booelans with values matrix1[i,j] == matrix2[i,j]
+	 * @return new matrix with booelans with features matrix1[i,j] == matrix2[i,j]
 	 */
 	public static boolean [][] equal(double [][] matrix1, double [][] matrix2) {
 		boolean [][] equals = new boolean[matrix1.length][matrix1[0].length];
@@ -562,11 +562,11 @@ public class MatrixOps {
 	}
 
 	/**
-	 * Returns a new matrix of booleans where true is set if the values to the two matrices are
+	 * Returns a new matrix of booleans where true is set if the features to the two matrices are
 	 * the same at that index
 	 * @param matrix1
 	 * @param matrix2
-	 * @return new matrix with booelans with values matrix1[i,j] == matrix2[i,j]
+	 * @return new matrix with booelans with features matrix1[i,j] == matrix2[i,j]
 	 */
 	public static boolean [][] equal(boolean [][] matrix1, boolean [][] matrix2) {
 		boolean [][] equals = new boolean[matrix1.length][matrix1[0].length];
@@ -589,7 +589,7 @@ public class MatrixOps {
 	 * bigger than value
 	 * @param matrix
 	 * @param value
-	 * @return new matrix with booelans with values matrix1[i,j] == matrix2[i,j]
+	 * @return new matrix with booelans with features matrix1[i,j] == matrix2[i,j]
 	 */
 	public static boolean [][] biggerThan(double [][] matrix, double value) {
 		boolean [][] equals = new boolean[matrix.length][matrix[0].length];
@@ -817,7 +817,7 @@ public class MatrixOps {
 	// Unit Tested
 	/**
 	 * @param matrix
-	 * @return sum of all values in the matrix
+	 * @return sum of all features in the matrix
 	 */
 	public static double sum(double [][] matrix) {
 		double sum = 0.0;
@@ -856,7 +856,7 @@ public class MatrixOps {
 
 	// Unit Tested
 	/**
-	 * All values in matrix that is less than <code>lessthan</code> is assigned
+	 * All features in matrix that is less than <code>lessthan</code> is assigned
 	 * the value <code>assign</code>
 	 * @param matrix
 	 * @param lessthan
@@ -876,7 +876,7 @@ public class MatrixOps {
 	// Unit Tested
 	/**
 	 * @param matrix
-	 * @return a new matrix with the values of matrix squared
+	 * @return a new matrix with the features of matrix squared
 	 */
 	public static double [][] square(double [][] matrix) {
 		return scalarPow(matrix,2);
@@ -1193,7 +1193,7 @@ public class MatrixOps {
 
 	public static void assignValuesToRow(double[][] matrix, int row, int[] indicies, double [] values) {
 		if( indicies.length != values.length ) {
-			throw new IllegalArgumentException("Length of indicies and values have to be equal");
+			throw new IllegalArgumentException("Length of indicies and features have to be equal");
 		}
 		for (int j = 0; j < indicies.length; j++) {
 			matrix[row][indicies[j]] = values[j];

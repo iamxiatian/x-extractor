@@ -121,7 +121,7 @@ public class WordNode {
     public String toString() {
         return "WordNode{" +
                 "name='" + name + '\'' +
-                ", pos='" + pos + '\'' +
+                ", features='" + pos + '\'' +
                 ", count=" + count +
                 ", importance=" + importance +
                 '}';

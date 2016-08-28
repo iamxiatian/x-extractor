@@ -37,3 +37,5 @@ x-extractor是本人在研究过程中所实现的基于TextRank的关键词抽�
 
 1. T-SNE-Java: [[https://github.com/lejon/T-SNE-Java]] , T-SNE用于词图的可视化
 
+2. k-Means Cluster: [[https://github.com/skyline0623/K-meansCluster]]
+
