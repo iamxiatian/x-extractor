@@ -225,6 +225,10 @@ public class Word2Vec {
         return wordMap.get(word);
     }
 
+    public boolean containsWord(String word) {
+        return wordMap.containsKey(word);
+    }
+
     public float[] vectorPlus(float[] v1, float[] v2, boolean newSpaceCopy) {
         float[] vector = newSpaceCopy? v1.clone():v1;
 

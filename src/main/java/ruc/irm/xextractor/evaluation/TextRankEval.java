@@ -1,13 +1,12 @@
 package ruc.irm.xextractor.evaluation;
 
 import com.google.common.base.Splitter;
-import com.google.common.collect.Sets;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 import org.zhinang.conf.Configuration;
 import ruc.irm.xextractor.commons.ExtractConf;
-import ruc.irm.xextractor.keyword.KeywordExtractor;
+import ruc.irm.xextractor.keyword.TextRankKeywordExtractor;
 
 import javax.xml.parsers.*;
 import java.io.File;
@@ -66,7 +65,7 @@ public class TextRankEval {
         // if(!title.contains("柳传志")) return new EvalResult(0,0,0);
         List<String> keywords = Splitter.on(",").splitToList(tags);
         //真正的关键词抽取处理
-        KeywordExtractor extractor = new KeywordExtractor(conf);
+        TextRankKeywordExtractor extractor = new TextRankKeywordExtractor(conf);
         int topN = 10;
         List<String> extractedKeywords = extractor.extractAsList(title, content, topN);
 
@@ -85,34 +84,13 @@ public class TextRankEval {
         double recall = matched * 1.0 / keywords.size();
         double precision = matched * 1.0 / extractedLabelCount;
         if (matched == 0) {
-            return new EvalResult(precision, recall, 0.0);
+            return new EvalResult(0, 0, 0.0);
         } else {
             return new EvalResult(precision, recall, 2 * recall * precision / (recall + precision));
         }
     }
 
-    private static final class EvalResult {
-        public double precision;
-        public double recall;
-        public double f;
 
-        public EvalResult(double precision, double recall, double f) {
-            this.precision = precision;
-            this.recall = recall;
-            this.f = f;
-        }
-
-        public void add(EvalResult r) {
-            this.precision += r.precision;
-            this.recall += r.recall;
-            this.f += r.f;
-        }
-
-        public double getF() {
-            if (precision <= 0 || recall <= 0) return 0;
-            return 2 * precision * recall / (precision + recall);
-        }
-    }
 
     public class SaxHandler extends DefaultHandler {
         private StringBuilder buffer = new StringBuilder();

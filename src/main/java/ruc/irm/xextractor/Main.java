@@ -1,12 +1,11 @@
 package ruc.irm.xextractor;
 
 import com.google.common.base.Charsets;
-import com.google.common.base.Joiner;
 import com.google.common.io.Files;
 import org.apache.commons.cli.*;
 import org.zhinang.conf.Configuration;
 import ruc.irm.xextractor.commons.ExtractConf;
-import ruc.irm.xextractor.keyword.KeywordExtractor;
+import ruc.irm.xextractor.keyword.TextRankKeywordExtractor;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,7 +49,7 @@ public class Main {
             text.append(lines.get(i)).append("\n");
         }
 
-        KeywordExtractor extractor = new KeywordExtractor(conf);
+        TextRankKeywordExtractor extractor = new TextRankKeywordExtractor(conf);
         String keywords = extractor.extractAsString(title, text.toString(), 5);
         System.out.println("抽取的关键词为：" + keywords);
     }

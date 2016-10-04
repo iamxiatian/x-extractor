@@ -28,7 +28,7 @@ public final class SegmentFactory {
     }
 
 
-    private static final Segment getHanSegment(Configuration conf) {
+    public static final Segment getHanSegment(Configuration conf) {
         if (hanSegment == null) {
             hanSegment = new HanSegment(conf);
             try {
@@ -45,7 +45,7 @@ public final class SegmentFactory {
     }
 
 
-    private static final Segment getAnsjSegment(Configuration conf) {
+    public static final Segment getAnsjSegment(Configuration conf) {
         if (ansjSegment == null) {
             ansjSegment = new AnsjSegment(conf);
             try {
