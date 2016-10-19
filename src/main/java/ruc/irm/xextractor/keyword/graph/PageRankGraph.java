@@ -1,4 +1,4 @@
-package ruc.irm.xextractor.keyword;
+package ruc.irm.xextractor.keyword.graph;
 
 /**
  * PageRank的节点表示和计算

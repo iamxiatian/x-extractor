@@ -8,18 +8,32 @@ x-extractor是本人在研究过程中所实现的基于TextRank的关键词抽�
 
 # Run
 
-1. 确保计算机上已经安装Java1.8环境和gradle
+1. 确保计算机上已经安装Java1.8环境和最新的Scala及SBT
 
 2. 编译代码：
 	```
-	gradle compileJava
-
-	gradle copyJars
+	sbt package
 	```
 3. 测试：
 	```
-	./run.py Main -f test/article01.txt
+	sbt console
+    > val result = Keyword evaluate 5
+    > result foreach println
 	```
+
+## Data
+1. 训练词向量模型的维基百科文本数据集： [[https://pan.baidu.com/s/1kV6nB7L]]
+
+由2015年6月发布的维基百科中文导出数据“zhwiki-20150602-pages-articles-multistream.xml.bz”加工生成 ,该数据集共包含516,695篇文章，已经进行分词处理；
+
+2. 由上述维基百科文本数据集生成的word2vec模型文件：[[https://pan.baidu.com/s/1gfJPU3D]]
+
+该模型采用Gensim的word2vec以默认参数生成。
+
+3. 南方周末抓取生成的带关键词文章数据集：[[https://pan.baidu.com/s/1pKOMe6n]]
+
+关键词通过原始文章中的tag得到。
+
 
 ## Reference
 
@@ -36,6 +50,4 @@ x-extractor是本人在研究过程中所实现的基于TextRank的关键词抽�
 用到的源代码包括:
 
 1. T-SNE-Java: [[https://github.com/lejon/T-SNE-Java]] , T-SNE用于词图的可视化
-
-2. k-Means Cluster: [[https://github.com/skyline0623/K-meansCluster]]
 

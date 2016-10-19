@@ -6,7 +6,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 import org.zhinang.conf.Configuration;
 import ruc.irm.xextractor.commons.ExtractConf;
-import ruc.irm.xextractor.keyword.TextRankKeywordExtractor;
+import ruc.irm.xextractor.keyword.TextRankExtractor;
 
 import javax.xml.parsers.*;
 import java.io.File;
@@ -19,6 +19,7 @@ import java.util.Set;
  * User: xiatian
  * Date: 3/11/13 12:29 AM
  */
+@Deprecated
 public class TextRankEval {
     private Configuration conf = ExtractConf.create();
 
@@ -65,7 +66,7 @@ public class TextRankEval {
         // if(!title.contains("柳传志")) return new EvalResult(0,0,0);
         List<String> keywords = Splitter.on(",").splitToList(tags);
         //真正的关键词抽取处理
-        TextRankKeywordExtractor extractor = new TextRankKeywordExtractor(conf);
+        TextRankExtractor extractor = new TextRankExtractor(TextRankExtractor.GraphType.WeightedRank);
         int topN = 10;
         List<String> extractedKeywords = extractor.extractAsList(title, content, topN);
 

@@ -10,5 +10,36 @@
         <value>true</value>
         <description>自动生成关键词和摘要, 不再取网页中的Ｍeta信息</description>
     </property>
-    
+
+    <property>
+        <name>extractor.keyword.merge.neighbor</name>
+        <value>false</value>
+        <description>生成关键词时是否自动合并相邻词语</description>
+    </property>
+
+    <property>
+        <name>extractor.keyword.word2vec.file</name>
+        <value>/home/xiatian/data/wiki/word2vec.bin</value>
+        <description>word2vec训练生成的模型文件</description>
+    </property>
+
+    <property>
+        <name>extractor.keyword.alpha</name>
+        <value>0.33</value>
+    </property>
+
+    <property>
+        <name>extractor.keyword.beta</name>
+        <value>0.34</value>
+    </property>
+
+    <property>
+        <name>extractor.keyword.gamma</name>
+        <value>0.33</value>
+    </property>
+
+    <property>
+        <name>extractor.keyword.lambda</name>
+        <value>30</value>
+    </property>
 </configuration>

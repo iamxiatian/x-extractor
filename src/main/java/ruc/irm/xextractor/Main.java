@@ -5,7 +5,7 @@ import com.google.common.io.Files;
 import org.apache.commons.cli.*;
 import org.zhinang.conf.Configuration;
 import ruc.irm.xextractor.commons.ExtractConf;
-import ruc.irm.xextractor.keyword.TextRankKeywordExtractor;
+import ruc.irm.xextractor.keyword.TextRankExtractor;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,7 +49,7 @@ public class Main {
             text.append(lines.get(i)).append("\n");
         }
 
-        TextRankKeywordExtractor extractor = new TextRankKeywordExtractor(conf);
+        TextRankExtractor extractor = new TextRankExtractor(TextRankExtractor.GraphType.WeightedRank);
         String keywords = extractor.extractAsString(title, text.toString(), 5);
         System.out.println("抽取的关键词为：" + keywords);
     }

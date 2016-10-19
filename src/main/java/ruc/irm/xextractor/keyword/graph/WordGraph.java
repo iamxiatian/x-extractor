@@ -1,9 +1,10 @@
-package ruc.irm.xextractor.keyword;
+package ruc.irm.xextractor.keyword.graph;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zhinang.conf.Configuration;
 import org.zhinang.util.ds.KeyValuePair;
+import ruc.irm.xextractor.keyword.SpecifiedWeight;
 import ruc.irm.xextractor.nlp.SegWord;
 import ruc.irm.xextractor.nlp.Segment;
 import ruc.irm.xextractor.nlp.SegmentFactory;

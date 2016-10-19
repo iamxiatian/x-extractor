@@ -1,16 +1,13 @@
-package ruc.irm.xextractor.keyword;
+package ruc.irm.xextractor.keyword.graph;
 
 import ruc.irm.xextractor.algorithm.Word2Vec;
 
-import java.io.IOException;
 import java.util.Map;
 
 /**
  * 融合Word2Vec的关键词抽取
  *
- * 参数说明请参考：夏天. 词语位置加权TextRank的关键词抽取研究. 现代图书情报技术, 2013, 29(9): 30-34.
  * User: xiatian
- * Date: 3/10/13 4:07 PM
  */
 public class Word2VecWordGraph extends WordGraph {
     //词语的覆盖影响力因子
@@ -75,20 +72,19 @@ public class Word2VecWordGraph extends WordGraph {
             i++;
         }
 
-        float[][] simMatrix = word2vecSimMatrix(words);
-        float[] word2vecScores = new float[words.length];
-        float word2vecTotalScore = 0;
-        for(i=0; i<words.length; i++) {
-            float lineTotal = 0;
-            for(int j=0; j<words.length; j++) {
-                lineTotal += simMatrix[i][j];
-            }
-            word2vecScores[i] = lineTotal;
-            word2vecTotalScore += lineTotal;
-        }
+//        float[][] simMatrix = word2vecSimMatrix(words);
+//        float[] word2vecScores = new float[words.length];
+//        float word2vecTotalScore = 0;
+//        for(i=0; i<words.length; i++) {
+//            float lineTotal = 0;
+//            for(int j=0; j<words.length; j++) {
+//                lineTotal += simMatrix[i][j];
+//            }
+//            word2vecScores[i] = lineTotal;
+//            word2vecTotalScore += lineTotal;
+//        }
 
         //输出word2vec的重要性
-
         for (i = 0; i < words.length; i++) {
            String wordFrom = words[i];
 
@@ -101,28 +97,34 @@ public class Word2VecWordGraph extends WordGraph {
 
             float totalImportance = 0.0f;    //相邻节点的节点重要性之和
             int totalOccurred = 0;       //相邻节点出现的总频度
+            float totalWord2VecScore = 0.0f;
             for (String w : adjacentWords.keySet()) {
                 totalImportance += wordNodeMap.get(w).getImportance();
                 totalOccurred += wordNodeMap.get(w).getCount();
+
+                totalWord2VecScore += word2Vec.similarity(wordFrom, w);
             }
 
             for (int j = 0; j < words.length; j++) {
                 String wordTo = words[j];
                 WordNode nodeTo = wordNodeMap.get(wordTo);
 
+                //根据宁建飞 刘降珍:《融合 Word2vec 与 TextRank 的关键词抽取研究》一文设置的权重
                 if (adjacentWords.containsKey(wordTo)) {
                     //计算i到j的转移概率
                     double partA = 1.0f / adjacentWords.size();
-                    double partB = nodeTo.getImportance() / totalImportance;
-                    double partC = nodeTo.getCount() * 1.0f / totalOccurred;
+                    //double partB = nodeTo.getImportance() / totalImportance;
+                    //double partC = nodeTo.getCount() * 1.0f / totalOccurred;
 
-                    double partD = word2vecScores[j]/word2vecTotalScore;
+                    //double partD = word2vecScores[j]/word2vecTotalScore;
+                    float partD = word2Vec.similarity(wordFrom, wordTo)/totalWord2VecScore;
 
                     //double sim = word2Vec.similarity(wordFrom, wordTo);
 
-                    matrix[j][i] = partA * paramAlpha + partB * paramBeta + partC * paramGamma;
-                    matrix[j][i] = matrix[j][i]*0.8 + 0.2*partD;
+                    //matrix[j][i] = partA * paramAlpha + partB * paramBeta + partC * paramGamma;
+                    //matrix[j][i] = matrix[j][i]*0.9 + 0.1*partD;
                     //matrix[j][i] = matrix[j][i]*0.8 + 0.2*sim;
+                    matrix[j][i] = 0.5*partA + 0.5*partD;
                 }
             }
         }

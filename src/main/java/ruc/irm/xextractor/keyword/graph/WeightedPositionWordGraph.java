@@ -1,10 +1,4 @@
-package ruc.irm.xextractor.keyword;
-
-import org.zhinang.conf.Configuration;
-import org.zhinang.util.ds.KeyValuePair;
-import ruc.irm.xextractor.nlp.SegWord;
-import ruc.irm.xextractor.nlp.Segment;
-import ruc.irm.xextractor.nlp.SegmentFactory;
+package ruc.irm.xextractor.keyword.graph;
 
 import java.util.*;
 
@@ -79,7 +73,8 @@ public class WeightedPositionWordGraph extends WordGraph {
                     double partA = 1.0f / adjacentWords.size();
                     double partB = nodeTo.getImportance() / totalImportance;
                     double partC = nodeTo.getCount() * 1.0f / totalOccurred;
-                    matrix[j][i] = partA * paramAlpha + partB * paramBeta + partC * paramGamma;
+                    matrix[j][i] = 0.33 * paramAlpha + 0.34 * paramBeta + 0.33 * paramGamma;
+                    //matrix[j][i] = partA * paramAlpha + partB * paramBeta + partC * paramGamma;
                 }
             }
         }

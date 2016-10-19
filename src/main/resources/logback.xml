@@ -9,7 +9,7 @@
         </layout>
     </appender>
 
-    <logger name="ruc.irm.xextractor" level="debug" additivity="false">
+    <logger name="ruc.irm.xextractor" level="info" additivity="false">
         <appender-ref ref="STDOUT" />
     </logger>
 

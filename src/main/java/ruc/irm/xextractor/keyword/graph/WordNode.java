@@ -1,4 +1,4 @@
-package ruc.irm.xextractor.keyword;
+package ruc.irm.xextractor.keyword.graph;
 
 import java.util.HashMap;
 import java.util.HashSet;
