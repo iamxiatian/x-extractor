@@ -49,7 +49,7 @@ public class Main {
             text.append(lines.get(i)).append("\n");
         }
 
-        TextRankExtractor extractor = new TextRankExtractor(TextRankExtractor.GraphType.WeightedRank);
+        TextRankExtractor extractor = new TextRankExtractor(TextRankExtractor.GraphType.PositionRank);
         String keywords = extractor.extractAsString(title, text.toString(), 5);
         System.out.println("抽取的关键词为：" + keywords);
     }

@@ -1,37 +1,50 @@
 package ruc.irm.xextractor.keyword.graph;
 
-import java.util.*;
+import ruc.irm.xextractor.algorithm.Word2Vec;
+import smile.clustering.KMeans;
+import smile.clustering.XMeans;
+import smile.math.distance.EuclideanDistance;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.IntStream;
 
 /**
- * 词语位置加权实现的关键词词图
+ * 融合Word2Vec的关键词抽取
  *
- * 参数说明请参考：夏天. 词语位置加权TextRank的关键词抽取研究. 现代图书情报技术, 2013, 29(9): 30-34.
  * User: xiatian
- * Date: 3/10/13 4:07 PM
  */
-public class WeightedPositionWordGraph extends WordGraph {
+public class SimWordGraph extends WordGraph {
     //词语的覆盖影响力因子
-    private float paramAlpha = 0.1f;
+    private float paramAlpha = 0.33f;
 
     //词语的位置影响力因子
-    private float paramBeta = 0.8f;
+    private float paramBeta = 0.34f;
 
     //词语的频度影响力因子
-    private float paramGamma = 0.1f;
+    private float paramGamma = 0.33f;
 
+    private Word2Vec word2Vec = null;
 
-    public WeightedPositionWordGraph() {
+    private int maxK = 5;
+
+    public SimWordGraph() {
         super();
+        this.word2Vec = Word2Vec.getInstance("/home/xiatian/data/wiki/word2vec.bin");
     }
 
-    public WeightedPositionWordGraph(float paramAlpha, float paramBeta, float paramGamma, boolean linkBack) {
+    public SimWordGraph(float alpha, float beta, float gamma, int maxK, boolean linkBack) {
         this();
 
-        this.paramAlpha = paramAlpha;
-        this.paramBeta = paramBeta;
-        this.paramGamma = paramGamma;
+        this.paramAlpha = alpha;
+        this.paramBeta = beta;
+        this.paramGamma = gamma;
         this.linkBack = linkBack;
+        this.maxK = maxK;
     }
+
 
     @Override
     public PageRankGraph makePageRankGraph() {
@@ -47,8 +60,9 @@ public class WeightedPositionWordGraph extends WordGraph {
             i++;
         }
 
+        //输出word2vec的重要性
         for (i = 0; i < words.length; i++) {
-            String wordFrom = words[i];
+           String wordFrom = words[i];
 
             WordNode nodeFrom = wordNodeMap.get(wordFrom);
             if (nodeFrom == null) {
@@ -59,9 +73,13 @@ public class WeightedPositionWordGraph extends WordGraph {
 
             float totalImportance = 0.0f;    //相邻节点的节点重要性之和
             int totalOccurred = 0;       //相邻节点出现的总频度
+
+
+            double totalClusterImportance = 0.0;
             for (String w : adjacentWords.keySet()) {
                 totalImportance += wordNodeMap.get(w).getImportance();
                 totalOccurred += wordNodeMap.get(w).getCount();
+                totalClusterImportance += word2Vec.similarity(wordFrom, w);
             }
 
             for (int j = 0; j < words.length; j++) {
@@ -72,9 +90,11 @@ public class WeightedPositionWordGraph extends WordGraph {
                     //计算i到j的转移概率
                     double partA = 1.0f / adjacentWords.size();
                     double partB = nodeTo.getImportance() / totalImportance;
-                    double partC = nodeTo.getCount() * 1.0f / totalOccurred;
-                    //matrix[j][i] = 0.33 * paramAlpha + 0.34 * paramBeta + 0.33 * paramGamma;
-                    matrix[j][i] = partA * paramAlpha + partB * paramBeta + partC * paramGamma;
+                    //double partC = nodeTo.getCount() * 1.0f / totalOccurred;
+
+                    double partC = word2Vec.similarity(wordFrom, wordTo)/totalClusterImportance;
+
+                    matrix[j][i] =paramAlpha*partA + paramBeta*partB + paramGamma*partC;
                 }
             }
         }

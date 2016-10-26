@@ -47,11 +47,15 @@ public class ExtractKeywordEvaluation {
 
     public static EvalResult[] evaluate(int topN) throws ParserConfigurationException, SAXException, IOException {
         Configuration conf = ExtractConf.create();
-        TextRankExtractor positionWeightedExtractor = new TextRankExtractor(WeightedRank);
+        TextRankExtractor textRankExtractor = new TextRankExtractor(TextRank);
+
+        TextRankExtractor positionWeightedExtractor = new TextRankExtractor(PositionRank);
 
         TextRankExtractor ningExtractor = new TextRankExtractor(NingJianfei);
 
-        TextRankExtractor clusterWeightedExtractor = new TextRankExtractor(ClusterRank);
+        TextRankExtractor clusterExtractor = new TextRankExtractor(ClusterRank);
+
+        TextRankExtractor clusterWeightedExtractor = new TextRankExtractor(ClusterPositionRank);
 
         Word2VecKMeansExtractor word2vecExtractor = new Word2VecKMeansExtractor(conf);
 
@@ -60,53 +64,31 @@ public class ExtractKeywordEvaluation {
 
         reader.open(f);
         int articles = 0;
+        EvalResult textRankResult = new EvalResult(0, 0, 0);
         EvalResult positionWeightedResult = new EvalResult(0, 0, 0);
         EvalResult ningResult = new EvalResult(0, 0, 0);
         EvalResult clusterWeightedResult = new EvalResult(0, 0, 0);
-
         EvalResult word2vecResult = new EvalResult(0, 0, 0);
+
         while (reader.hasNext()) {
             XmlArticleReader.Article article = reader.next();
             System.out.println("Process " + article.id + "...");
             articles++;
-            //int  topN = 5; //article.tags.size();
-            List<String> keywords1 = positionWeightedExtractor.extractAsList(article.title, article.content, topN);
-            EvalResult evalResult = evaluate(article.tags, keywords1);
-            positionWeightedResult.add(evalResult);
 
-            List<String> keywords2 = ningExtractor.extractAsList(article.title, article.content, topN);
-            evalResult = evaluate(article.tags, keywords2);
-            ningResult.add(evalResult);
-
-            List<String> keywords3 = clusterWeightedExtractor.extractAsList(article.title, article.content, topN);
-            evalResult = evaluate(article.tags, keywords3);
-            clusterWeightedResult.add(evalResult);
-
-            List<String> keywords4 = word2vecExtractor.extractAsList(article.title, article.content, topN);
-            evalResult = evaluate(article.tags, keywords4);
-            word2vecResult.add(evalResult);
-
-            //输出在聚类方式中成功，但在textrank方式中不存在的词语
-//            StringBuilder clusterMatched = new StringBuilder();
-//            for (String kw : keywords3) {
-//                if(article.tags.contains(kw) && !keywords1.contains(kw) && !keywords2.contains(kw)) {
-//                    clusterMatched.append(kw).append(" ");
-//                    System.out.println("\t\tTags:\t " + article.tags);
-//                    System.out.println("\t\tMixIn:\t " + keywords1);
-//                    System.out.println("\t\tNot MixIn:\t " + keywords2);
-//                    System.out.println("\t\tCluster:\t " + keywords3);
-//                }
-//            }
-//            if(clusterMatched.length()>0) {
-//                System.out.println(article.id + "\t" + article.title + "\t" + clusterMatched.toString());
-//            }
+            textRankResult.add(evaluate(article.tags, textRankExtractor.extractAsList(article.title, article.content, topN)));
+            word2vecResult.add(evaluate(article.tags, word2vecExtractor.extractAsList(article.title, article.content, topN)));
+            ningResult.add(evaluate(article.tags, ningExtractor.extractAsList(article.title, article.content, topN)));
+            positionWeightedResult.add(evaluate(article.tags, positionWeightedExtractor.extractAsList(article.title, article.content, topN)));
+            clusterWeightedResult.add(evaluate(article.tags, clusterWeightedExtractor.extractAsList(article.title, article.content, topN)));
         }
-        positionWeightedResult.done(articles).setLabel("词语位置加权方法");
-        ningResult.done(articles).setLabel("宁建飞方法");
-        clusterWeightedResult.done(articles).setLabel("词向量聚类加权方法");
-        word2vecResult.done(articles).setLabel("Word2Vec聚类方法");
 
-        return new EvalResult[]{clusterWeightedResult, positionWeightedResult, ningResult, word2vecResult};
+        textRankResult.done(articles).setLabel("TextRank方法");
+        word2vecResult.done(articles).setLabel("Word2Vec聚类方法");
+        ningResult.done(articles).setLabel("宁建飞方法");
+        positionWeightedResult.done(articles).setLabel("词语位置加权方法");
+        clusterWeightedResult.done(articles).setLabel("词向量聚类加权方法");
+
+        return new EvalResult[]{textRankResult, word2vecResult, ningResult, positionWeightedResult, clusterWeightedResult};
     }
 
 
@@ -174,7 +156,7 @@ public class ExtractKeywordEvaluation {
         } else if (cmdLine.hasOption("id")) {
             int id = Integer.parseInt(cmdLine.getOptionValue("id"));
             Configuration conf = new Configuration();
-            TextRankExtractor extractor = new TextRankExtractor(TextRankExtractor.GraphType.WeightedRank);
+            TextRankExtractor extractor = new TextRankExtractor(TextRankExtractor.GraphType.PositionRank);
 
             Configuration conf2 = new Configuration();
             conf2.set("extractor.keyword.model", "position");

@@ -66,7 +66,7 @@ public class TextRankEval {
         // if(!title.contains("柳传志")) return new EvalResult(0,0,0);
         List<String> keywords = Splitter.on(",").splitToList(tags);
         //真正的关键词抽取处理
-        TextRankExtractor extractor = new TextRankExtractor(TextRankExtractor.GraphType.WeightedRank);
+        TextRankExtractor extractor = new TextRankExtractor(TextRankExtractor.GraphType.PositionRank);
         int topN = 10;
         List<String> extractedKeywords = extractor.extractAsList(title, content, topN);
 

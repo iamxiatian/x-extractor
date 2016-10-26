@@ -36,9 +36,11 @@ public class TextRankExtractor implements KeywordExtractor {
     private boolean mergeNeighbor = true;
 
     public enum GraphType {
-        WeightedRank,
+        TextRank, //传统的TextRank方法
+        PositionRank, //词语位置加权
         NingJianfei, //融合 Word2vec 与 TextRank 的关键词抽取研究
-        ClusterRank //xiatian
+        ClusterRank, //词向量聚类加权
+        ClusterPositionRank //词向量聚类+位置加权
     }
 
     private GraphType graphType;
@@ -87,12 +89,17 @@ public class TextRankExtractor implements KeywordExtractor {
         } else {
             //use improved text rank method proposed by xiatian
             WordGraph wordGraph = null;
-            if(graphType == GraphType.WeightedRank) {
-                wordGraph = new WeightedPositionWordGraph(alpha, beta, gamma, true);
+
+            if(graphType == GraphType.TextRank) {
+                wordGraph = new WeightedPositionWordGraph(1, 0, 0, true);
+            } else if(graphType == GraphType.PositionRank) {
+                wordGraph = new WeightedPositionWordGraph(0.33f, 0.34f, 0.33f, true);
             } else if(graphType == GraphType.NingJianfei){
                 wordGraph = new Word2VecWordGraph(alpha, beta, gamma, true);
+            } else if(graphType == GraphType.ClusterRank){
+                wordGraph = new ClusterWordGraph(0.5f, 0, 0.5f, topN, true);
             } else {
-                wordGraph = new ClusterWordGraph(topN, true);
+                wordGraph = new ClusterWordGraph(0.33f, 0.34f, 0.33f, topN, true);
             }
             wordGraph.build(title, lambda);
             wordGraph.build(content, 1.0f);
