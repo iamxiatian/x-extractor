@@ -9,9 +9,9 @@ import java.util.Map.Entry;
 /**
  * Load word2vec model(trained by c implementation version), and do analysis in Java.
  *
- * @see <a href="http://blog.csdn.net/zhoubl668/article/details/24314769">http://blog.csdn.net/zhoubl668/article/details/24314769</a>
  * @author <a href="mailto:xiat@ruc.edu.cn">XiaTian</a>
  * @date Feb 05, 2015 11:45 PM
+ * @see <a href="http://blog.csdn.net/zhoubl668/article/details/24314769">http://blog.csdn.net/zhoubl668/article/details/24314769</a>
  */
 public class Word2Vec {
     private HashMap<String, float[]> wordMap = new HashMap<String, float[]>();
@@ -42,6 +42,12 @@ public class Word2Vec {
      * Load trained model
      */
     public Word2Vec loadModel(String path) throws IOException {
+        File modelFile = new File(path);
+        if (!modelFile.exists()) {
+            System.out.println("请从 https://pan.baidu.com/s/1gfJPU3D] 下载文件，并保存为：" + modelFile.getCanonicalPath());
+            throw new IOException("不存在模型文件：" + modelFile.getCanonicalPath());
+        }
+
         DataInputStream dis = null;
         BufferedInputStream bis = null;
         double len = 0;
@@ -230,7 +236,7 @@ public class Word2Vec {
     }
 
     public float[] vectorPlus(float[] v1, float[] v2, boolean newSpaceCopy) {
-        float[] vector = newSpaceCopy? v1.clone():v1;
+        float[] vector = newSpaceCopy ? v1.clone() : v1;
 
         double len = 0.0f;
         for (int i = 0; i < vector.length; i++) {
@@ -254,7 +260,7 @@ public class Word2Vec {
 
         len = Math.sqrt(len);
         for (int i = 0; i < vector.length; i++) {
-            vector[i] = (float)(vector[i]/len);
+            vector[i] = (float) (vector[i] / len);
         }
         return vector;
     }
@@ -283,7 +289,7 @@ public class Word2Vec {
             count++;
         }
 
-        if(count==0){
+        if (count == 0) {
             return null;
         } else if (count > 1) {
             //Normalize
@@ -293,7 +299,7 @@ public class Word2Vec {
             }
             len = Math.sqrt(len);
             for (int i = 0; i < vector.length; i++) {
-                vector[i] = (float)(vector[i]/len);
+                vector[i] = (float) (vector[i] / len);
             }
         }
 
@@ -381,7 +387,7 @@ public class Word2Vec {
             return;
         }
 
-        if(!cmdLine.hasOption("f")){
+        if (!cmdLine.hasOption("f")) {
             helpFormatter.printHelp(formatString, options);
             return;
         }
@@ -424,7 +430,7 @@ public class Word2Vec {
                     }
                 }
             }
-        } else if(cmdLine.hasOption("sim")){
+        } else if (cmdLine.hasOption("sim")) {
             System.out.println("Start similarity test(Type EXIT to exit)...");
             while (true) {
                 System.out.print("Enter first word or sentence:");

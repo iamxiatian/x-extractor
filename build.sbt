@@ -1,6 +1,7 @@
-organization  := "ruc.nlp"
-version       := "0.1"
-scalaVersion  := "2.11.8"
+name := "extractor"
+organization := "ruc.nlp"
+version := "0.1"
+scalaVersion := "2.12.4"
 scalacOptions := Seq("-unchecked", "-deprecation", "-encoding", "utf8")
 
 libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "1.0.6"
@@ -14,7 +15,7 @@ libraryDependencies += "org.slf4j" % "slf4j-api" % "1.7.1"
 
 libraryDependencies += "commons-cli" % "commons-cli" % "1.2"
 libraryDependencies += "org.apache.commons" % "commons-lang3" % "3.3.1"
-libraryDependencies += "com.google.guava" % "guava" % "18.0"
+libraryDependencies += "com.google.guava" % "guava" % "23.5-jre"
 
 //NLP libraries
 libraryDependencies += "com.hankcs" % "hanlp" % "portable-1.2.11"
@@ -29,25 +30,20 @@ libraryDependencies += "com.squareup.okhttp3" % "okhttp" % "3.4.1"
 
 scalacOptions in Test ++= Seq("-Yrangepos")
 
-resolvers ++= Seq(
-  // other resolvers here
-  // if you want to use snapshot builds (currently 0.12-SNAPSHOT), use this.
-  "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/",
-  "Sonatype Releases" at "https://oss.sonatype.org/content/repositories/releases/",
-  "nlpcn" at "http://maven.nlpcn.org/"
+enablePlugins(JavaAppPackaging)
+
+mainClass in Compile := Some("Start")
+
+mappings in(Compile, packageDoc) := Seq()
+
+//把运行时需要的配置文件拷贝到打包后的主目录下
+// mappings in Universal ++= directory("conf")
+
+javaOptions in Universal ++= Seq(
+  // -J params will be added as jvm parameters
+  "-J-Xms2G",
+  "-J-Xmx4G"
 )
 
-assemblyJarName in assembly := "x-extractor.jar"
-test in assembly := {}
-mainClass in assembly := Some("HTTP")
-
-assemblyMergeStrategy in assembly := {
-  case PathList("javax", "servlet", xs @ _*)         => MergeStrategy.first
-  case PathList(ps @ _*) if ps.last endsWith ".html" => MergeStrategy.first
-  case "application.conf"                            => MergeStrategy.concat
-  case "logback.xml"                                 => MergeStrategy.last
-  case "unwanted.txt"                                => MergeStrategy.discard
-  case x =>
-    val oldStrategy = (assemblyMergeStrategy in assembly).value
-    oldStrategy(x)
-}
+//解决windows的line too long问题
+scriptClasspath := Seq("*")
