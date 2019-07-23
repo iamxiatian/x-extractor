@@ -1,3 +1,5 @@
+package ruc.irm.extractor.keyword
+
 /**
   * 演示程序的入口地址。
   *

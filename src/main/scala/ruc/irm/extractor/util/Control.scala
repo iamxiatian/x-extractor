@@ -1,3 +1,5 @@
+package ruc.irm.extractor.util
+
 /**
   * 控制流，目前实现了借贷模式(Loan Pattern)
   *
@@ -18,4 +20,3 @@ object Control {
     }
 
 }
-

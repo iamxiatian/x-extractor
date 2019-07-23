@@ -1,6 +1,8 @@
+package ruc.irm.extractor.keyword
+
 import ruc.irm.xextractor.evaluation.EvalResult
-import ruc.irm.xextractor.keyword.TextRankExtractor.GraphType._
 import ruc.irm.xextractor.keyword.{TextRankExtractor, Word2VecKMeansExtractor}
+import ruc.irm.xextractor.keyword.TextRankExtractor.GraphType._
 
 /**
   * 利用Scala进行关键词抽取测试, 命令行下运行：sbt console
@@ -73,8 +75,6 @@ object Keyword {
   /**
     * 输出tikz绘制曲线图需要的数据格式
     *
-    * @param x
-    * @param y
     * @return
     */
   def outputPlotData(results: IndexedSeq[Array[EvalResult]], fromTopN: Int): String = {

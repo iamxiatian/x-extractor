@@ -1,14 +1,9 @@
 package ruc.irm.xextractor.nlp;
 
 import org.zhinang.conf.Configuration;
-import ruc.irm.xextractor.nlp.impl.AnsjSegment;
 import ruc.irm.xextractor.nlp.impl.HanSegment;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.zip.GZIPInputStream;
 
 public final class SegmentFactory {
     private static Segment hanSegment = null;
@@ -20,11 +15,7 @@ public final class SegmentFactory {
      * @return
      */
     public static final Segment getSegment(Configuration conf) {
-        if(conf==null || conf.get("segment.name", "ansj").equalsIgnoreCase("ansj")) {
-            return getAnsjSegment(conf);
-        } else {
-            return getHanSegment(conf);
-        }
+       return getHanSegment(conf);
     }
 
 
@@ -44,21 +35,21 @@ public final class SegmentFactory {
         return hanSegment;
     }
 
-
-    public static final Segment getAnsjSegment(Configuration conf) {
-        if (ansjSegment == null) {
-            ansjSegment = new AnsjSegment(conf);
-            try {
-                ansjSegment.loadUserDefinedWords("/new_wiki_words.dic.gz");
-                ansjSegment.loadUserDefinedWords("/new_tag_words.dic.gz");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            ansjSegment.setConfiguration(conf);
-        }
-
-        return ansjSegment;
-    }
+//
+//    public static final Segment getAnsjSegment(Configuration conf) {
+//        if (ansjSegment == null) {
+//            ansjSegment = new AnsjSegment(conf);
+//            try {
+//                ansjSegment.loadUserDefinedWords("/new_wiki_words.dic.gz");
+//                ansjSegment.loadUserDefinedWords("/new_tag_words.dic.gz");
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        } else {
+//            ansjSegment.setConfiguration(conf);
+//        }
+//
+//        return ansjSegment;
+//    }
 
 }

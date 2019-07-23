@@ -1,26 +1,27 @@
+
 name := "extractor"
 organization := "ruc.nlp"
-version := "0.1"
-scalaVersion := "2.12.4"
-scalacOptions := Seq("-unchecked", "-deprecation", "-encoding", "utf8")
+version := "0.2"
 
-libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "1.0.6"
+scalaVersion := "2.13.0"
+sbtVersion := "1.2.8"
+scalacOptions := Seq("-unchecked", "-deprecation", "-encoding", "utf8")
+javacOptions := Seq("-encoding", "UTF-8")
+
+libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "1.2.0"
+libraryDependencies += "com.github.scopt" %% "scopt" % "4.0.0-RC2" //command line parser
 
 libraryDependencies += "com.github.haifengl" % "smile-scala_2.11" % "1.2.0" //simile machine learning
-libraryDependencies += "com.github.scopt" %% "scopt" % "3.5.0" //command line parser
-
 
 //add jars for old java code
 libraryDependencies += "org.slf4j" % "slf4j-api" % "1.7.1"
 
-libraryDependencies += "commons-cli" % "commons-cli" % "1.2"
 libraryDependencies += "org.apache.commons" % "commons-lang3" % "3.3.1"
 libraryDependencies += "com.google.guava" % "guava" % "23.5-jre"
 
 //NLP libraries
-libraryDependencies += "com.hankcs" % "hanlp" % "portable-1.2.11"
-libraryDependencies += "org.nlpcn" % "nlp-lang" % "1.6"
-libraryDependencies += "org.ansj" % "ansj_seg" % "5.0.1"
+libraryDependencies += "com.hankcs" % "hanlp" % "portable-1.7.4"
+//libraryDependencies += "org.ansj" % "ansj_seg" % "5.0.1"
 
 libraryDependencies += "net.sf.trove4j" % "trove4j" % "3.0.3"
 
@@ -42,7 +43,7 @@ mappings in(Compile, packageDoc) := Seq()
 javaOptions in Universal ++= Seq(
   // -J params will be added as jvm parameters
   "-J-Xms2G",
-  "-J-Xmx4G"
+  "-J-Xmx8G"
 )
 
 //解决windows的line too long问题

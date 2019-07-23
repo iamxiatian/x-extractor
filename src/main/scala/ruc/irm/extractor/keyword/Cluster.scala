@@ -1,4 +1,7 @@
-import smile.clustering._
+package ruc.irm.extractor.keyword
+
+import smile.clustering.KMeans
+import smile.clustering.xmeans
 import smile.math.distance.EuclideanDistance
 
 object Cluster {

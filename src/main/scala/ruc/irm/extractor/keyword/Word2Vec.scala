@@ -1,3 +1,5 @@
+package ruc.irm.extractor.keyword
+
 // Copyright 2013 trananh
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,7 +15,7 @@
 // limitations under the License.
 
 import java.io._
-import scala.Array
+
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
@@ -83,7 +85,7 @@ class VecBinaryReader(val file: File) {
   *
   * Example usage:
   * {{{
-  * val model = new Word2Vec()
+  * val model = new ruc.irm.extractor.keyword.Word2Vec()
   * model.load("vectors.bin")
   * val results = model.distance(List("france"), N = 10)
   *

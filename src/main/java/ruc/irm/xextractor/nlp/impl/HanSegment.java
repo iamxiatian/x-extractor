@@ -52,7 +52,7 @@ public class HanSegment implements Segment {
 
         List<SegWord> results = new ArrayList<SegWord>();
         for (Term term : terms) {
-            results.add(new SegWord(term.word, term.nature.name()));
+            results.add(new SegWord(term.word, term.nature.toString()));
         }
 
         return results;
@@ -77,11 +77,11 @@ public class HanSegment implements Segment {
             if (term.word.length() < 2) {
                 continue;
             }
-            if (term.nature.name().startsWith("nr")) {
+            if (term.nature.toString().startsWith("nr")) {
                 entities.addPerson(term.word);
-            } else if (term.nature.name().startsWith("nt")) {
+            } else if (term.nature.toString().startsWith("nt")) {
                 entities.addOrganization(term.word);
-            } else if (term.nature.name().startsWith("ns")) {
+            } else if (term.nature.toString().startsWith("ns")) {
                 if (term.word.endsWith("大学") || term.word.endsWith("学院")) {
                     entities.addOrganization(term.word);
                 } else {

@@ -1,8 +1,11 @@
+package ruc.irm.extractor.keyword
+
+import scala.xml.XML
+
 /**
   * 关键词抽取的测试文章集合
   */
 object Articles {
-  import scala.xml.XML
 
   val doc = XML.loadFile("data/articles.xml")
 

@@ -1,7 +1,5 @@
 package ruc.irm.xextractor.algorithm;
 
-import org.apache.commons.cli.*;
-
 import java.io.*;
 import java.util.*;
 import java.util.Map.Entry;
@@ -367,105 +365,105 @@ public class Word2Vec {
     }
 
 
-    public static void main(String[] args) throws IOException, ParseException {
-        HelpFormatter helpFormatter = new HelpFormatter();
-        CommandLineParser parser = new PosixParser();
-        Options options = new Options();
-
-        String formatString = "Word2Vec -f model_file [-d distance]|[-a " +
-                "analogy]";
-
-        options.addOption(new Option("f", true, "model file"));
-        options.addOption(new Option("d", false, "test word distance"));
-        options.addOption(new Option("a", false, "test word analogy"));
-        options.addOption(new Option("sim", false, "test similarity"));
-        options.addOption("h", "help", false, "print help for the command.");
-
-        CommandLine cmdLine = parser.parse(options, args);
-        if (cmdLine.hasOption("h")) {
-            helpFormatter.printHelp(formatString, options);
-            return;
-        }
-
-        if (!cmdLine.hasOption("f")) {
-            helpFormatter.printHelp(formatString, options);
-            return;
-        }
-        String modelFile = cmdLine.getOptionValue("f");
-        if (!new File(modelFile).exists()) {
-            System.out.println("Model file " + modelFile + " does not exist.");
-            return;
-        }
-
-        Word2Vec vec = new Word2Vec();
-        vec.loadModel(modelFile);
-        System.out.println("size==>" + vec.getSize());
-
-        Scanner scanner = new Scanner(System.in);
-        if (cmdLine.hasOption("a")) {
-            System.out.println("Start analogy test(Type EXIT to exit)...");
-            while (true) {
-                System.out.print("Enter first word or sentence:");
-                String word1 = scanner.nextLine();
-                if (word1.equalsIgnoreCase("exit")) {
-                    return;
-                }
-                System.out.print("Enter second word or sentence:");
-                String word2 = scanner.nextLine();
-                if (word2.equalsIgnoreCase("exit")) {
-                    return;
-                }
-                System.out.print("Enter third word or sentence:");
-                String word3 = scanner.nextLine();
-                if (word3.equalsIgnoreCase("exit")) {
-                    return;
-                }
-
-                TreeSet<WordEntry> entries = vec.analogy(word1, word2, word3);
-                if (entries == null) {
-                    System.out.println("Out of dictionary");
-                } else {
-                    for (WordEntry entry : entries) {
-                        System.out.println(entry.name + "\t" + entry.score);
-                    }
-                }
-            }
-        } else if (cmdLine.hasOption("sim")) {
-            System.out.println("Start similarity test(Type EXIT to exit)...");
-            while (true) {
-                System.out.print("Enter first word or sentence:");
-                String word1 = scanner.nextLine();
-                if (word1.equalsIgnoreCase("exit")) {
-                    return;
-                }
-                System.out.print("Enter second word or sentence:");
-                String word2 = scanner.nextLine();
-                if (word2.equalsIgnoreCase("exit")) {
-                    return;
-                }
-
-                double sim = vec.similarity(word1, word2);
-                System.out.println("similarity:" + sim);
-            }
-        } else {
-            System.out.println("Start distance test(Type EXIT to exit)...");
-            while (true) {
-                System.out.print("Enter word or sentence (EXIT to break):");
-                String word = scanner.nextLine();
-                if (word.equalsIgnoreCase("exit")) {
-                    System.out.println("Bye.");
-                    break;
-                }
-                Set<WordEntry> entries = vec.distance(word);
-                if (entries == null) {
-                    System.out.println("Out of dictionary word!");
-                    continue;
-                }
-                for (WordEntry entry : entries) {
-                    System.out.println(entry.name + "\t" + entry.score);
-                }
-                System.out.println("\n\n=============================\n");
-            }
-        }
+    public static void main(String[] args)  {
+//        HelpFormatter helpFormatter = new HelpFormatter();
+//        CommandLineParser parser = new PosixParser();
+//        Options options = new Options();
+//
+//        String formatString = "ruc.irm.extractor.keyword.Word2Vec -f model_file [-d distance]|[-a " +
+//                "analogy]";
+//
+//        options.addOption(new Option("f", true, "model file"));
+//        options.addOption(new Option("d", false, "test word distance"));
+//        options.addOption(new Option("a", false, "test word analogy"));
+//        options.addOption(new Option("sim", false, "test similarity"));
+//        options.addOption("h", "help", false, "print help for the command.");
+//
+//        CommandLine cmdLine = parser.parse(options, args);
+//        if (cmdLine.hasOption("h")) {
+//            helpFormatter.printHelp(formatString, options);
+//            return;
+//        }
+//
+//        if (!cmdLine.hasOption("f")) {
+//            helpFormatter.printHelp(formatString, options);
+//            return;
+//        }
+//        String modelFile = cmdLine.getOptionValue("f");
+//        if (!new File(modelFile).exists()) {
+//            System.out.println("Model file " + modelFile + " does not exist.");
+//            return;
+//        }
+//
+//        Word2Vec vec = new Word2Vec();
+//        vec.loadModel(modelFile);
+//        System.out.println("size==>" + vec.getSize());
+//
+//        Scanner scanner = new Scanner(System.in);
+//        if (cmdLine.hasOption("a")) {
+//            System.out.println("Start analogy test(Type EXIT to exit)...");
+//            while (true) {
+//                System.out.print("Enter first word or sentence:");
+//                String word1 = scanner.nextLine();
+//                if (word1.equalsIgnoreCase("exit")) {
+//                    return;
+//                }
+//                System.out.print("Enter second word or sentence:");
+//                String word2 = scanner.nextLine();
+//                if (word2.equalsIgnoreCase("exit")) {
+//                    return;
+//                }
+//                System.out.print("Enter third word or sentence:");
+//                String word3 = scanner.nextLine();
+//                if (word3.equalsIgnoreCase("exit")) {
+//                    return;
+//                }
+//
+//                TreeSet<WordEntry> entries = vec.analogy(word1, word2, word3);
+//                if (entries == null) {
+//                    System.out.println("Out of dictionary");
+//                } else {
+//                    for (WordEntry entry : entries) {
+//                        System.out.println(entry.name + "\t" + entry.score);
+//                    }
+//                }
+//            }
+//        } else if (cmdLine.hasOption("sim")) {
+//            System.out.println("Start similarity test(Type EXIT to exit)...");
+//            while (true) {
+//                System.out.print("Enter first word or sentence:");
+//                String word1 = scanner.nextLine();
+//                if (word1.equalsIgnoreCase("exit")) {
+//                    return;
+//                }
+//                System.out.print("Enter second word or sentence:");
+//                String word2 = scanner.nextLine();
+//                if (word2.equalsIgnoreCase("exit")) {
+//                    return;
+//                }
+//
+//                double sim = vec.similarity(word1, word2);
+//                System.out.println("similarity:" + sim);
+//            }
+//        } else {
+//            System.out.println("Start distance test(Type EXIT to exit)...");
+//            while (true) {
+//                System.out.print("Enter word or sentence (EXIT to break):");
+//                String word = scanner.nextLine();
+//                if (word.equalsIgnoreCase("exit")) {
+//                    System.out.println("Bye.");
+//                    break;
+//                }
+//                Set<WordEntry> entries = vec.distance(word);
+//                if (entries == null) {
+//                    System.out.println("Out of dictionary word!");
+//                    continue;
+//                }
+//                for (WordEntry entry : entries) {
+//                    System.out.println(entry.name + "\t" + entry.score);
+//                }
+//                System.out.println("\n\n=============================\n");
+//            }
+//        }
     }
 }
