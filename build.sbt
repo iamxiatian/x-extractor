@@ -48,3 +48,12 @@ javaOptions in Universal ++= Seq(
 
 //解决windows的line too long问题
 scriptClasspath := Seq("*")
+
+
+initialCommands in console +=
+  """
+    |import java.io._
+    |import java.util.Date
+    |import ruc.irm.extractor.keyword._
+    |
+  """.stripMargin

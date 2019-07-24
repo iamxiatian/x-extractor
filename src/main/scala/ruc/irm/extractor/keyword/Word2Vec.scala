@@ -41,7 +41,11 @@ class VecBinaryReader(val file: File) {
   private val dis = new DataInputStream(bis)
 
   /** Close the stream. */
-  def close() { dis.close(); bis.close(); fis.close() }
+  def close(): Unit = {
+    dis.close()
+    bis.close()
+    fis.close()
+  }
 
   /** Read the next byte.
     *
@@ -108,8 +112,8 @@ class Word2Vec {
 
   /** Load data from a binary file.
     *
-    * @param filename Path to file containing word projections in the BINARY FORMAT.
-    * @param limit Maximum number of words to load from file (a.k.a. max vocab size).
+    * @param filename  Path to file containing word projections in the BINARY FORMAT.
+    * @param limit     Maximum number of words to load from file (a.k.a. max vocab size).
     * @param normalize Normalize the loaded vectors if true (default to true).
     */
   def load(filename: String, limit: Integer = Int.MaxValue, normalize: Boolean = true): Word2Vec = {
@@ -140,7 +144,7 @@ class Word2Vec {
 
       // Store the normalized vector representation, keyed by the word
       normFactor = if (normalize) magnitude(vector).toFloat else 1f
-      vocab.put(word, vector.map(_ / normFactor) )
+      vocab.put(word, vector.map(_ / normFactor))
 
       // Eat up the next delimiter character
       reader.read()
@@ -165,7 +169,7 @@ class Word2Vec {
   def vectorSize: Int = vecSize
 
   /** Clear internal data. */
-  def clear() {
+  def clear(): Unit = {
     vocab.clear()
     numWords = 0
     vecSize = 0
@@ -189,7 +193,7 @@ class Word2Vec {
     vocab.getOrElse(word, Array[Float]())
   }
 
-  val vectorInDouble = (word:String) => vector(word).map(_.toDouble)
+  val vectorInDouble = (word: String) => vector(word).map(_.toDouble)
 
   /** Compute the Euclidean distance between two vectors.
     *
@@ -249,7 +253,7 @@ class Word2Vec {
     * @return The magnitude of the vector.
     */
   def magnitude(vec: Array[Float]): Double = {
-    math.sqrt(vec.foldLeft(0.0){(sum, x) => sum + (x * x)})
+    math.sqrt(vec.foldLeft(0.0) { (sum, x) => sum + (x * x) })
   }
 
   /** Normalize the vector.
@@ -281,9 +285,9 @@ class Word2Vec {
     * sense to define both in and out sets.
     *
     * @param vector The vector.
-    * @param inSet Set of words to consider. Specify None to use all words in the vocab (default behavior).
+    * @param inSet  Set of words to consider. Specify None to use all words in the vocab (default behavior).
     * @param outSet Set of words to exclude (default to empty).
-    * @param N The maximum number of terms to return (default to 40).
+    * @param N      The maximum number of terms to return (default to 40).
     * @return The N closest terms in the vocab to the given vector and their associated cosine similarity scores.
     */
   def nearestNeighbors(vector: Array[Float], inSet: Option[Set[String]] = None,
@@ -320,7 +324,7 @@ class Word2Vec {
   /** Find the N closest terms in the vocab to the input word(s).
     *
     * @param input The input word(s).
-    * @param N The maximum number of terms to return (default to 40).
+    * @param N     The maximum number of terms to return (default to 40).
     * @return The N closest terms in the vocab to the input word(s) and their associated cosine similarity scores.
     */
   def distance(input: List[String], N: Integer = 40): List[(String, Float)] = {
@@ -349,7 +353,7 @@ class Word2Vec {
     * @param word1 First word in the analogy [word1] is to [word2] as [word3] is to ???.
     * @param word2 Second word in the analogy [word1] is to [word2] as [word3] is to ???
     * @param word3 Third word in the analogy [word1] is to [word2] as [word3] is to ???.
-    * @param N The maximum number of terms to return (default to 40).
+    * @param N     The maximum number of terms to return (default to 40).
     * @return The N closest terms in the vocab to the analogy and their associated cosine similarity scores.
     */
   def analogy(word1: String, word2: String, word3: String, N: Integer = 40): List[(String, Float)] = {
@@ -370,7 +374,7 @@ class Word2Vec {
   /** Rank a set of words by their respective distance to some central term.
     *
     * @param word The central word.
-    * @param set Set of words to rank.
+    * @param set  Set of words to rank.
     * @return Ordered list of words and their associated scores.
     */
   def rank(word: String, set: Set[String]): List[(String, Float)] = {
@@ -411,11 +415,11 @@ object Word2Vec {
 object RunWord2Vec {
 
   /** Demo. */
-  def main(args: Array[String]) {
+  def main(args: Array[String]): Unit = {
     // Load word2vec model from binary file.
     val model = new Word2Vec()
     //model.load("../word2vec-scala/vectors.bin")
-    model.load("/home/xiatian/data/wiki/word2vec.bin")
+    model.load("./data/wiki/word2vec.bin")
 
     // distance: Find N closest words
     println("`中国`最近的词语：")

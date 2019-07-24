@@ -19,7 +19,7 @@
 
     <property>
         <name>extractor.keyword.word2vec.file</name>
-        <value>/home/xiatian/data/wiki/word2vec.bin</value>
+        <value>./word2vec.bin</value>
         <description>word2vec训练生成的模型文件</description>
     </property>
 

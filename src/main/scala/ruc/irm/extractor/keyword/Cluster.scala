@@ -11,7 +11,7 @@ object Cluster {
   /** 对文本分词并只保留可接受词性的词语，保存到List[String]之中 */
   val acceptWords: String => List[String] = (text: String) => Segment.segment(text).filter(x => acceptPOS(x._2)).map(_._1)
 
-  val word2vec: Word2Vec = Word2Vec("/home/xiatian/data/wiki/word2vec.bin")
+  val word2vec: Word2Vec = Word2Vec("./word2vec.bin")
 
   /** 对文本分词后保留的词性，取出其对应的word2vec词向量 */
   val wordVectors = (text: String) => acceptWords(text).filter(word2vec.contains).map(word2vec.vectorInDouble).toArray
