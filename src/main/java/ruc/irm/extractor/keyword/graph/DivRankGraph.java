@@ -3,7 +3,7 @@ package ruc.irm.extractor.keyword.graph;
 /**
  * DivRank: the Interplay of Prestige and Diversity in Information Networks
  * <p/>
- *
+ * <p>
  * User: xiatian
  * Date: 3/10/13 1:26 PM
  */
@@ -39,6 +39,35 @@ public class DivRankGraph {
         return MATRIX[to][from];
     }
 
+    /**
+     * 计算D_T(u)
+     *
+     * @param u
+     * @return
+     */
+    private double DT(int u) {
+        double sum = 0;
+        for (int v = 0; v < V.length; v++) {
+            sum += edgeWeight(u, v) * V[v];
+        }
+        return sum;
+    }
+
+    /**
+     * 点态估计当前时刻的转移概率
+     *
+     * @param from
+     * @param to
+     * @return
+     */
+    private double dynamicEdgeWeight(int from, int to) {
+        double lambda = 0.85;
+        double p0 = edgeWeight(from, to);
+        double D = DT(from);
+
+        return (1 - lambda) * distributionOnV[to] + lambda * p0 * V[to] / D;
+    }
+
     public String printMatrix() {
         StringBuilder sb = new StringBuilder();
 
@@ -57,7 +86,7 @@ public class DivRankGraph {
      * 计算PageRank
      *
      * @param iterateCount: 迭代次数
-     * @param dumpFactor      阻尼系数，一般取值为0.85
+     * @param dumpFactor    阻尼系数，一般取值为0.85
      */
     public void iterateCalculation(int iterateCount, double dumpFactor) {
         double[] nextTimeV = new double[V.length];
@@ -67,10 +96,12 @@ public class DivRankGraph {
             for (int i = 0; i < V.length; i++) {
                 double accumulate = 0;
                 for (int j = 0; j < V.length; j++) {
-                    accumulate += edgeWeight(j, i) * V[j];
+                    //accumulate += edgeWeight(j, i) * V[j];
+                    accumulate += dynamicEdgeWeight(j, i) * V[j];
                 }
 
-                nextTimeV[i] = (1-dumpFactor) * distributionOnV[i] + dumpFactor * accumulate;
+                //nextTimeV[i] = (1 - dumpFactor) * distributionOnV[i] + dumpFactor * accumulate;
+                nextTimeV[i] = accumulate;
             }
 
             V = nextTimeV;
