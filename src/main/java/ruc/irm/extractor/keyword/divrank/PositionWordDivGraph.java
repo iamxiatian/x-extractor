@@ -1,6 +1,11 @@
-package ruc.irm.extractor.keyword.graph;
+package ruc.irm.extractor.keyword.divrank;
 
-import java.util.*;
+import ruc.irm.extractor.keyword.RankGraph;
+import ruc.irm.extractor.keyword.graph.PageRankGraph;
+import ruc.irm.extractor.keyword.graph.WordGraph;
+import ruc.irm.extractor.keyword.graph.WordNode;
+
+import java.util.Map;
 
 /**
  * 词语位置加权实现的关键词词图
@@ -9,7 +14,7 @@ import java.util.*;
  * User: xiatian
  * Date: 3/10/13 4:07 PM
  */
-public class WeightedPositionWordGraph extends WordGraph {
+public class PositionWordDivGraph extends WordGraph {
     //词语的覆盖影响力因子
     private float paramAlpha = 0.1f;
 
@@ -20,11 +25,11 @@ public class WeightedPositionWordGraph extends WordGraph {
     private float paramGamma = 0.1f;
 
 
-    public WeightedPositionWordGraph() {
+    public PositionWordDivGraph() {
         super();
     }
 
-    public WeightedPositionWordGraph(float paramAlpha, float paramBeta, float paramGamma, boolean linkBack) {
+    public PositionWordDivGraph(float paramAlpha, float paramBeta, float paramGamma, boolean linkBack) {
         this();
 
         this.paramAlpha = paramAlpha;
@@ -34,7 +39,7 @@ public class WeightedPositionWordGraph extends WordGraph {
     }
 
     @Override
-    public PageRankGraph makePageRankGraph() {
+    public RankGraph makeRankGraph() {
         final String[] words = new String[wordNodeMap.size()];
         double[] values = new double[wordNodeMap.size()];
         final double[][] matrix = new double[wordNodeMap.size()][wordNodeMap.size()];
@@ -79,7 +84,7 @@ public class WeightedPositionWordGraph extends WordGraph {
             }
         }
 
-        return new PageRankGraph(words, values, matrix);
+        return new DivRankGraph(words, values, matrix);
     }
 
 }

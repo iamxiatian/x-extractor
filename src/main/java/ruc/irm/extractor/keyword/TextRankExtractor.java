@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.zhinang.conf.Configuration;
 import ruc.irm.extractor.commons.ChineseStopKeywords;
 import ruc.irm.extractor.commons.ExtractConf;
+import ruc.irm.extractor.keyword.divrank.ClusterWordDivGraph;
+import ruc.irm.extractor.keyword.divrank.PositionWordDivGraph;
 import ruc.irm.extractor.keyword.graph.*;
 import ruc.irm.extractor.nlp.SegmentFactory;
 
@@ -40,7 +42,9 @@ public class TextRankExtractor implements KeywordExtractor {
         PositionRank, //词语位置加权
         NingJianfei, //融合 Word2vec 与 TextRank 的关键词抽取研究
         ClusterRank, //词向量聚类加权
-        ClusterPositionRank //词向量聚类+位置加权
+        ClusterPositionRank, //词向量聚类+位置加权
+        PositionDivRank, //词语位置加权+DivRank
+        ClusterDivRank, //词向量聚类加权+DivRank
     }
 
     private GraphType graphType;
@@ -91,21 +95,25 @@ public class TextRankExtractor implements KeywordExtractor {
             WordGraph wordGraph = null;
 
             if(graphType == GraphType.TextRank) {
-                wordGraph = new WeightedPositionWordGraph(1, 0, 0, true);
+                wordGraph = new PositionWordGraph(1, 0, 0, true);
             } else if(graphType == GraphType.PositionRank) {
-                wordGraph = new WeightedPositionWordGraph(0.33f, 0.34f, 0.33f, true);
+                wordGraph = new PositionWordGraph(0.33f, 0.34f, 0.33f, true);
             } else if(graphType == GraphType.NingJianfei){
-                wordGraph = new Word2VecWordGraph(alpha, beta, gamma, true);
+                wordGraph = new EmbeddingWordGraph(alpha, beta, gamma, true);
             } else if(graphType == GraphType.ClusterRank){
                 wordGraph = new ClusterWordGraph(0.5f, 0, 0.5f, topN, true);
+            } else if(graphType == GraphType.PositionDivRank){
+                wordGraph = new PositionWordDivGraph(0.33f, 0.34f, 0.33f, true);
+            }else if(graphType == GraphType.ClusterDivRank){
+                wordGraph = new ClusterWordDivGraph(0.5f, 0, 0.5f, topN, true);
             } else {
                 wordGraph = new ClusterWordGraph(0.33f, 0.34f, 0.33f, topN, true);
             }
             wordGraph.build(title, lambda);
             wordGraph.build(content, 1.0f);
 
-            PageRankGraph g = wordGraph.makePageRankGraph();
-            g.iterateCalculation(20, 0.15f);
+            RankGraph g = wordGraph.makeRankGraph();
+            g.iterateCalculation(20, 0.85f);
             g.quickSort();
             int count = 0;
             int limit = topN;

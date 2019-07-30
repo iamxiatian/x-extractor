@@ -59,6 +59,10 @@ public class ExtractKeywordEvaluation {
 
         Word2VecKMeansExtractor word2vecExtractor = new Word2VecKMeansExtractor(conf);
 
+        //新算法
+        TextRankExtractor positionDivRankExtractor = new TextRankExtractor(PositionDivRank);
+        TextRankExtractor clusterDivRankExtractor = new TextRankExtractor(ClusterDivRank);
+
         XmlArticleReader reader = new XmlArticleReader();
         File f = new File("data/articles.xml");
 
@@ -70,6 +74,10 @@ public class ExtractKeywordEvaluation {
         EvalResult clusterWeightedResult = new EvalResult(0, 0, 0);
         EvalResult word2vecResult = new EvalResult(0, 0, 0);
 
+        EvalResult positionDivRankResult = new EvalResult(0, 0, 0);
+        EvalResult clusterDivRankResult = new EvalResult(0, 0, 0);
+
+
         while (reader.hasNext()) {
             XmlArticleReader.Article article = reader.next();
             System.out.println("Process " + article.id + "...");
@@ -80,6 +88,10 @@ public class ExtractKeywordEvaluation {
             ningResult.add(evaluate(article.tags, ningExtractor.extractAsList(article.title, article.content, topN)));
             positionWeightedResult.add(evaluate(article.tags, positionWeightedExtractor.extractAsList(article.title, article.content, topN)));
             clusterWeightedResult.add(evaluate(article.tags, clusterWeightedExtractor.extractAsList(article.title, article.content, topN)));
+
+            //新方法
+            positionDivRankResult.add(evaluate(article.tags, positionDivRankExtractor.extractAsList(article.title, article.content, topN)));
+            clusterDivRankResult.add(evaluate(article.tags, clusterDivRankExtractor.extractAsList(article.title, article.content, topN)));
         }
 
         textRankResult.done(articles).setLabel("TextRank方法");
@@ -88,7 +100,14 @@ public class ExtractKeywordEvaluation {
         positionWeightedResult.done(articles).setLabel("词语位置加权方法");
         clusterWeightedResult.done(articles).setLabel("词向量聚类加权方法");
 
-        return new EvalResult[]{textRankResult, word2vecResult, ningResult, positionWeightedResult, clusterWeightedResult};
+        //新方法
+        positionDivRankResult.done(articles).setLabel("PositionDivRank");
+        clusterDivRankResult.done(articles).setLabel("ClusterDivRank");
+
+        return new EvalResult[]{textRankResult, word2vecResult, ningResult,
+                positionWeightedResult, clusterWeightedResult,
+                positionDivRankResult, clusterDivRankResult
+        };
     }
 
 

@@ -1,43 +1,37 @@
 package ruc.irm.extractor.keyword.graph;
 
-import ruc.irm.extractor.algorithm.Word2Vec;
-
-import java.util.Map;
+import java.util.*;
 
 /**
- * 融合Word2Vec的关键词抽取
+ * 词语位置加权实现的关键词词图
  *
+ * 参数说明请参考：夏天. 词语位置加权TextRank的关键词抽取研究. 现代图书情报技术, 2013, 29(9): 30-34.
  * User: xiatian
+ * Date: 3/10/13 4:07 PM
  */
-public class SimWordGraph extends WordGraph {
+public class PositionWordGraph extends WordGraph {
     //词语的覆盖影响力因子
-    private float paramAlpha = 0.33f;
+    private float paramAlpha = 0.1f;
 
     //词语的位置影响力因子
-    private float paramBeta = 0.34f;
+    private float paramBeta = 0.8f;
 
     //词语的频度影响力因子
-    private float paramGamma = 0.33f;
+    private float paramGamma = 0.1f;
 
-    private Word2Vec word2Vec = null;
 
-    private int maxK = 5;
-
-    public SimWordGraph() {
+    public PositionWordGraph() {
         super();
-        this.word2Vec = Word2Vec.getInstance("./word2vec.bin");
     }
 
-    public SimWordGraph(float alpha, float beta, float gamma, int maxK, boolean linkBack) {
+    public PositionWordGraph(float paramAlpha, float paramBeta, float paramGamma, boolean linkBack) {
         this();
 
-        this.paramAlpha = alpha;
-        this.paramBeta = beta;
-        this.paramGamma = gamma;
+        this.paramAlpha = paramAlpha;
+        this.paramBeta = paramBeta;
+        this.paramGamma = paramGamma;
         this.linkBack = linkBack;
-        this.maxK = maxK;
     }
-
 
     @Override
     public PageRankGraph makeRankGraph() {
@@ -53,9 +47,8 @@ public class SimWordGraph extends WordGraph {
             i++;
         }
 
-        //输出word2vec的重要性
         for (i = 0; i < words.length; i++) {
-           String wordFrom = words[i];
+            String wordFrom = words[i];
 
             WordNode nodeFrom = wordNodeMap.get(wordFrom);
             if (nodeFrom == null) {
@@ -66,13 +59,9 @@ public class SimWordGraph extends WordGraph {
 
             float totalImportance = 0.0f;    //相邻节点的节点重要性之和
             int totalOccurred = 0;       //相邻节点出现的总频度
-
-
-            double totalClusterImportance = 0.0;
             for (String w : adjacentWords.keySet()) {
                 totalImportance += wordNodeMap.get(w).getImportance();
                 totalOccurred += wordNodeMap.get(w).getCount();
-                totalClusterImportance += word2Vec.similarity(wordFrom, w);
             }
 
             for (int j = 0; j < words.length; j++) {
@@ -83,11 +72,9 @@ public class SimWordGraph extends WordGraph {
                     //计算i到j的转移概率
                     double partA = 1.0f / adjacentWords.size();
                     double partB = nodeTo.getImportance() / totalImportance;
-                    //double partC = nodeTo.getCount() * 1.0f / totalOccurred;
-
-                    double partC = word2Vec.similarity(wordFrom, wordTo)/totalClusterImportance;
-
-                    matrix[j][i] =paramAlpha*partA + paramBeta*partB + paramGamma*partC;
+                    double partC = nodeTo.getCount() * 1.0f / totalOccurred;
+                    //matrix[j][i] = 0.33 * paramAlpha + 0.34 * paramBeta + 0.33 * paramGamma;
+                    matrix[j][i] = partA * paramAlpha + partB * paramBeta + partC * paramGamma;
                 }
             }
         }

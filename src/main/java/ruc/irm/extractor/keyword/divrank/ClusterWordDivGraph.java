@@ -1,11 +1,18 @@
-package ruc.irm.extractor.keyword.graph;
+package ruc.irm.extractor.keyword.divrank;
 
 import ruc.irm.extractor.algorithm.Word2Vec;
+import ruc.irm.extractor.keyword.RankGraph;
+import ruc.irm.extractor.keyword.graph.PageRankGraph;
+import ruc.irm.extractor.keyword.graph.WordGraph;
+import ruc.irm.extractor.keyword.graph.WordNode;
 import smile.clustering.KMeans;
 import smile.clustering.XMeans;
 import smile.math.distance.EuclideanDistance;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.IntStream;
 
 /**
@@ -13,7 +20,7 @@ import java.util.stream.IntStream;
  *
  * User: xiatian
  */
-public class ClusterWordGraph extends WordGraph {
+public class ClusterWordDivGraph extends WordGraph {
     //词语的覆盖影响力因子
     private float paramAlpha = 0.33f;
 
@@ -27,12 +34,12 @@ public class ClusterWordGraph extends WordGraph {
 
     private int maxK = 5;
 
-    public ClusterWordGraph() {
+    public ClusterWordDivGraph() {
         super();
         this.word2Vec = Word2Vec.getInstance("./word2vec.bin");
     }
 
-    public ClusterWordGraph(float alpha, float beta, float gamma, int maxK, boolean linkBack) {
+    public ClusterWordDivGraph(float alpha, float beta, float gamma, int maxK, boolean linkBack) {
         this();
 
         this.paramAlpha = alpha;
@@ -119,7 +126,7 @@ public class ClusterWordGraph extends WordGraph {
 
 
     @Override
-    public PageRankGraph makeRankGraph() {
+    public RankGraph makeRankGraph() {
         Map<String, Double> clusterImportanceMap = clustering();
         final String[] words = new String[wordNodeMap.size()];
         double[] values = new double[wordNodeMap.size()];
@@ -172,7 +179,7 @@ public class ClusterWordGraph extends WordGraph {
             }
         }
 
-        return new PageRankGraph(words, values, matrix);
+        return new DivRankGraph(words, values, matrix);
     }
 
 }

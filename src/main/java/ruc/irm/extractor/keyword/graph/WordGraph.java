@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zhinang.conf.Configuration;
 import org.zhinang.util.ds.KeyValuePair;
+import ruc.irm.extractor.keyword.RankGraph;
 import ruc.irm.extractor.keyword.SpecifiedWeight;
 import ruc.irm.extractor.nlp.SegWord;
 import ruc.irm.extractor.nlp.Segment;
@@ -13,7 +14,7 @@ import java.util.*;
 
 /**
  * 关键词词图的基类，目前有如下实现：
- *
+ * <p>
  * 词语位置加权的词图实现WeightedPositionWordGraph, 参考：夏天. 词语位置加权TextRank的关键词抽取研究. 现代图书情报技术, 2013, 29(9): 30-34.
  *
  * @author 夏天
@@ -46,6 +47,7 @@ public abstract class WordGraph {
 
     /**
      * 直接通过传入的词语和重要性列表构建关键词图
+     *
      * @param wordsWithImportance
      */
     public void build(List<KeyValuePair<String, Double>> wordsWithImportance) {
@@ -87,7 +89,7 @@ public abstract class WordGraph {
                 }
 
                 if (lastPosition == i - 1) {
-                    if(wordNode.getPos().startsWith("n") &&
+                    if (wordNode.getPos().startsWith("n") &&
                             (lastWordNode.getPos().equals("adj") || lastWordNode.getPos().startsWith("n"))) {
                         wordNode.addLeftNeighbor(lastWordNode.getName());
                         lastWordNode.addRightNeighbor(wordNode.getName());
@@ -103,7 +105,7 @@ public abstract class WordGraph {
     }
 
     public Set<String> getRightNeighbors(String word) {
-        if(wordNodeMap.get(word).getPos().equals("nr")) {
+        if (wordNodeMap.get(word).getPos().equals("nr")) {
             //相当于不合并人名后面的词语
             return new HashSet<>();
         } else {
@@ -131,7 +133,7 @@ public abstract class WordGraph {
                     return;
                 }
 
-                if(LOG.isDebugEnabled()) {
+                if (LOG.isDebugEnabled()) {
                     System.out.print(segWord.word + "/" + segWord.pos + " ");
                 }
 
@@ -143,8 +145,8 @@ public abstract class WordGraph {
                         specifiedWeight = importance;
                     }
 
-                    if(segWord.pos.equals("ns") || segWord.equals("nr")) {
-                        specifiedWeight = specifiedWeight*1.3f;
+                    if (segWord.pos.equals("ns") || segWord.equals("nr")) {
+                        specifiedWeight = specifiedWeight * 1.3f;
                     } else if (segWord.pos.startsWith("v")) {
                         specifiedWeight *= 0.5f;
                     }
@@ -167,7 +169,7 @@ public abstract class WordGraph {
                     }
 
                     if (lastPosition == i - 1) {
-                        if(wordNode.getPos().startsWith("n") &&
+                        if (wordNode.getPos().startsWith("n") &&
                                 (lastWordNode.getPos().equals("adj") || lastWordNode.getPos().startsWith("n"))) {
                             wordNode.addLeftNeighbor(lastWordNode.getName());
                             lastWordNode.addRightNeighbor(wordNode.getName());
@@ -195,7 +197,7 @@ public abstract class WordGraph {
 
     }
 
-    public abstract PageRankGraph makePageRankGraph();
+    public abstract RankGraph makeRankGraph();
 
     /**
      * 设置最大可以读取的词语数量

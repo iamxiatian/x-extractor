@@ -20,8 +20,11 @@ import ruc.irm.extractor.keyword.TextRankExtractor.GraphType._
 object Keyword {
   val weightedExtractor: TextRankExtractor = new TextRankExtractor(PositionRank)
   val ningExtractor: TextRankExtractor = new TextRankExtractor(NingJianfei)
-  val clusteringExtractor: TextRankExtractor = new TextRankExtractor(ClusterRank)
+  val clusterExtractor: TextRankExtractor = new TextRankExtractor(ClusterRank)
   val kmeansExtractor = new Word2VecKMeansExtractor()
+
+  val weightedDivExtractor: TextRankExtractor = new TextRankExtractor(PositionDivRank)
+  val clusterDivExtractor: TextRankExtractor = new TextRankExtractor(ClusterDivRank)
 
   /**
     * 对比测试第id篇文档在不同抽取方法下的抽取结果
@@ -36,8 +39,10 @@ object Keyword {
     println("-------------------")
     println("词语位置加权：\t" + weightedExtractor.extractAsList(title, content, topN))
     println("宁建飞方法：\t" + ningExtractor.extractAsList(title, content, topN))
-    println("夏天新方法：\t" + clusteringExtractor.extractAsList(title, content, topN))
+    println("夏天新方法：\t" + clusterExtractor.extractAsList(title, content, topN))
     println("Word2Vec聚类：\t" + kmeansExtractor.extractAsList(title, content, topN))
+    println("词语位置加权+DivRank：\t" + weightedDivExtractor.extractAsList(title, content, topN))
+    println("夏天新方法+DivRank：\t" + clusterDivExtractor.extractAsList(title, content, topN))
     println()
   }
 

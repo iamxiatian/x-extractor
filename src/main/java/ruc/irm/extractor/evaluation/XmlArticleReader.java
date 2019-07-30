@@ -46,7 +46,7 @@ public class XmlArticleReader {
 
     public boolean hasNext() {
         //@TODO 为加快测试，只取200篇文章测试
-        return position<totalArticles;// && position<200;
+        return position<totalArticles && position<200;
     }
 
     public Article next() {

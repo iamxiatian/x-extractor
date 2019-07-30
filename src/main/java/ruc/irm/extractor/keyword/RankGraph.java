@@ -1,13 +1,9 @@
-package ruc.irm.extractor.keyword.graph;
+package ruc.irm.extractor.keyword;
 
 /**
- * DivRank: the Interplay of Prestige and Diversity in Information Networks
- * <p/>
- * <p>
- * User: xiatian
- * Date: 3/10/13 1:26 PM
+ * 用于迭代计算的图，支持PageRankGraph和DivRankGraph两类
  */
-public class DivRankGraph {
+public abstract class RankGraph {
     /**
      * 节点的标签
      */
@@ -22,9 +18,9 @@ public class DivRankGraph {
     //转移矩阵， 第i列表示节点i指向其它节点的权重分配。即元素(i,j)表示节点j指向节点i的权重
     public final double[][] MATRIX;
 
-    public DivRankGraph(String[] labels,
-                        double[] distributionOnV,
-                        double[][] MATRIX) {
+    public RankGraph(String[] labels,
+                     double[] distributionOnV,
+                     double[][] MATRIX) {
         this.labels = labels;
         this.distributionOnV = distributionOnV;
         this.MATRIX = MATRIX;
@@ -35,37 +31,8 @@ public class DivRankGraph {
             this.V[i] = initValue;
     }
 
-    private double edgeWeight(int from, int to) {
+    protected double edgeWeight(int from, int to) {
         return MATRIX[to][from];
-    }
-
-    /**
-     * 计算D_T(u)
-     *
-     * @param u
-     * @return
-     */
-    private double DT(int u) {
-        double sum = 0;
-        for (int v = 0; v < V.length; v++) {
-            sum += edgeWeight(u, v) * V[v];
-        }
-        return sum;
-    }
-
-    /**
-     * 点态估计当前时刻的转移概率
-     *
-     * @param from
-     * @param to
-     * @return
-     */
-    private double dynamicEdgeWeight(int from, int to) {
-        double lambda = 0.85;
-        double p0 = edgeWeight(from, to);
-        double D = DT(from);
-
-        return (1 - lambda) * distributionOnV[to] + lambda * p0 * V[to] / D;
     }
 
     public String printMatrix() {
@@ -85,28 +52,10 @@ public class DivRankGraph {
     /**
      * 计算PageRank
      *
-     * @param iterateCount: 迭代次数
-     * @param dumpFactor    阻尼系数，一般取值为0.85
+     * @param iterateCount 迭代次数
+     * @param dampFactor   阻尼系数，一般取值为0.85
      */
-    public void iterateCalculation(int iterateCount, double dumpFactor) {
-        double[] nextTimeV = new double[V.length];
-
-        int iterators = 0;
-        while (iterators++ < iterateCount) {
-            for (int i = 0; i < V.length; i++) {
-                double accumulate = 0;
-                for (int j = 0; j < V.length; j++) {
-                    //accumulate += edgeWeight(j, i) * V[j];
-                    accumulate += dynamicEdgeWeight(j, i) * V[j];
-                }
-
-                //nextTimeV[i] = (1 - dumpFactor) * distributionOnV[i] + dumpFactor * accumulate;
-                nextTimeV[i] = accumulate;
-            }
-
-            V = nextTimeV;
-        }
-    }
+    public abstract void iterateCalculation(int iterateCount, double dampFactor);
 
     public void quickSort() {
         shuffle(); // to guard against worst-case
@@ -170,21 +119,4 @@ public class DivRankGraph {
             exchange(i, r);
         }
     }
-
-    public static void main(String[] args) {
-        //大数据、Web挖掘中PageRank的实例计算
-        DivRankGraph graph = new DivRankGraph(new String[]{"A", "B", "C", "D"}, new double[]{0.25f, 0.25f, 0.25f, 0.25f}, new double[][]{{0, 0.5f, 0, 0}, {1.0f / 3.0f, 0, 0, 0.5f}, {1.0f / 3.0f, 0, 1, 0.5f}, {1.0f / 3.0f, 0.5f, 0, 0}});
-        //PageRankGraph graph = new PageRankGraph(new String[]{"A", "B", "C", "D"}, new float[]{0.25f, 0.25f, 0.25f, 0.25f}, new float[][]{{0, 9.0f/10, 4.0f/5f, 18.0f/20.0f}, {199.0f/347.0f, 0, 0, 1.0f/20.0f}, {98.0f /347.0f, 1.0f/10f, 0, 1.0f/20f}, {49.0f / 347.0f, 0, 1.0f/5.0f, 0}});
-
-        int it = 1;
-        while (it++ < 50) {
-            graph.iterateCalculation(1, 0.2f);
-            System.out.print("[");
-            for (double v : graph.V) {
-                System.out.print(v + "\t");
-            }
-            System.out.println("]");
-        }
-    }
-
 }

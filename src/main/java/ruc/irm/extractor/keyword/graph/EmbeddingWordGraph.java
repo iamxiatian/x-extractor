@@ -9,7 +9,7 @@ import java.util.Map;
  *
  * User: xiatian
  */
-public class Word2VecWordGraph extends WordGraph {
+public class EmbeddingWordGraph extends WordGraph {
     //词语的覆盖影响力因子
     private float paramAlpha = 0.1f;
 
@@ -21,12 +21,12 @@ public class Word2VecWordGraph extends WordGraph {
 
     private Word2Vec word2Vec = null;
 
-    public Word2VecWordGraph() {
+    public EmbeddingWordGraph() {
         super();
         this.word2Vec = Word2Vec.getInstance("./word2vec.bin");
     }
 
-    public Word2VecWordGraph(float paramAlpha, float paramBeta, float paramGamma, boolean linkBack) {
+    public EmbeddingWordGraph(float paramAlpha, float paramBeta, float paramGamma, boolean linkBack) {
         this();
 
         this.paramAlpha = paramAlpha;
@@ -59,7 +59,7 @@ public class Word2VecWordGraph extends WordGraph {
 
 
     @Override
-    public PageRankGraph makePageRankGraph() {
+    public PageRankGraph makeRankGraph() {
         final String[] words = new String[wordNodeMap.size()];
         double[] values = new double[wordNodeMap.size()];
         final double[][] matrix = new double[wordNodeMap.size()][wordNodeMap.size()];
