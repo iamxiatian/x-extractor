@@ -1,13 +1,13 @@
 package ruc.irm.extractor.keyword.graph;
 
 /**
- * PageRank的节点表示和计算, 支持PPR(Personal PageRank)，PPR通过distributionOnV体现。
+ * DivRank: the Interplay of Prestige and Diversity in Information Networks
  * <p/>
- * <p>
+ *
  * User: xiatian
  * Date: 3/10/13 1:26 PM
  */
-public class PageRankGraph {
+public class DivRankGraph {
     /**
      * 节点的标签
      */
@@ -22,9 +22,9 @@ public class PageRankGraph {
     //转移矩阵， 第i列表示节点i指向其它节点的权重分配。即元素(i,j)表示节点j指向节点i的权重
     public final double[][] MATRIX;
 
-    public PageRankGraph(String[] labels,
-                         double[] distributionOnV,
-                         double[][] MATRIX) {
+    public DivRankGraph(String[] labels,
+                        double[] distributionOnV,
+                        double[][] MATRIX) {
         this.labels = labels;
         this.distributionOnV = distributionOnV;
         this.MATRIX = MATRIX;
@@ -57,9 +57,9 @@ public class PageRankGraph {
      * 计算PageRank
      *
      * @param iterateCount: 迭代次数
-     * @param taxRatio      抽税的百分比，一般取值为0.15
+     * @param dumpFactor      阻尼系数，一般取值为0.85
      */
-    public void iterateCalculation(int iterateCount, double taxRatio) {
+    public void iterateCalculation(int iterateCount, double dumpFactor) {
         double[] nextTimeV = new double[V.length];
 
         int iterators = 0;
@@ -70,7 +70,7 @@ public class PageRankGraph {
                     accumulate += edgeWeight(j, i) * V[j];
                 }
 
-                nextTimeV[i] = taxRatio * distributionOnV[i] + (1 - taxRatio) * accumulate;
+                nextTimeV[i] = (1-dumpFactor) * distributionOnV[i] + dumpFactor * accumulate;
             }
 
             V = nextTimeV;
@@ -142,7 +142,7 @@ public class PageRankGraph {
 
     public static void main(String[] args) {
         //大数据、Web挖掘中PageRank的实例计算
-        PageRankGraph graph = new PageRankGraph(new String[]{"A", "B", "C", "D"}, new double[]{0.25f, 0.25f, 0.25f, 0.25f}, new double[][]{{0, 0.5f, 0, 0}, {1.0f / 3.0f, 0, 0, 0.5f}, {1.0f / 3.0f, 0, 1, 0.5f}, {1.0f / 3.0f, 0.5f, 0, 0}});
+        DivRankGraph graph = new DivRankGraph(new String[]{"A", "B", "C", "D"}, new double[]{0.25f, 0.25f, 0.25f, 0.25f}, new double[][]{{0, 0.5f, 0, 0}, {1.0f / 3.0f, 0, 0, 0.5f}, {1.0f / 3.0f, 0, 1, 0.5f}, {1.0f / 3.0f, 0.5f, 0, 0}});
         //PageRankGraph graph = new PageRankGraph(new String[]{"A", "B", "C", "D"}, new float[]{0.25f, 0.25f, 0.25f, 0.25f}, new float[][]{{0, 9.0f/10, 4.0f/5f, 18.0f/20.0f}, {199.0f/347.0f, 0, 0, 1.0f/20.0f}, {98.0f /347.0f, 1.0f/10f, 0, 1.0f/20f}, {49.0f / 347.0f, 0, 1.0f/5.0f, 0}});
 
         int it = 1;
