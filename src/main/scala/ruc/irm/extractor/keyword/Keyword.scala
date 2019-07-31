@@ -77,11 +77,11 @@ object Keyword {
     }.mkString("\n")
 
     s"""
-       |\begin{tabular}{| l | c| c | c |}
-       |\hline
+       |\\begin{tabular}{| l | c| c | c |}
+       |\\hline
        |Method & P & R & F \\
        |$lines
-       |\end{tabular}
+       |\\end{tabular}
     """.stripMargin
   }
 
