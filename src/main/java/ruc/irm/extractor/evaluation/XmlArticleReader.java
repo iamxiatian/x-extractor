@@ -26,6 +26,7 @@ import java.util.List;
  *     </article>
  * </articles>
  * </pre>
+ *
  * @author Tian Xia
  * @date Aug 21, 2016 18:11
  */
@@ -46,18 +47,22 @@ public class XmlArticleReader {
 
     public boolean hasNext() {
         //@TODO 为加快测试，只取200篇文章测试
-        return position<totalArticles && position<200;
+        return position < totalArticles && position < 200;
     }
 
     public Article next() {
         position++;
-        Element articleNode = (Element)articleNodeList.item(position-1);
+        Element articleNode = (Element) articleNodeList.item(position - 1);
         String url = articleNode.getElementsByTagName("url").item(0).getTextContent();
         String tags = articleNode.getElementsByTagName("tags").item(0).getTextContent();
         String title = articleNode.getElementsByTagName("title").item(0).getTextContent();
         String content = articleNode.getElementsByTagName("content").item(0).getTextContent();
 
-        return new Article(position-1, url, title, content, tags);
+        //截取一部分
+        if (content.length() > 3000)
+            return new Article(position - 1, url, title, content.substring(0, 3000), tags);
+        else
+            return new Article(position - 1, url, title, content, tags);
     }
 
     public static class Article {
