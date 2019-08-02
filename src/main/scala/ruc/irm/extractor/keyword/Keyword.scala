@@ -106,7 +106,7 @@ object Keyword {
         case (algorithms, idx) => f"${idx + fromTopN} " + algorithms.map(a => f"${a.f}%.3f").mkString(" ")
       }.mkString("\n")
 
-    val header = "TopN M1 M2 M3 M4 M5"
+    val header = "TopN M1 M2 M3 M4 M5 M6 M7"
     Seq("Precision:", header, precision, "\nRecall:", header, recall, "\nF-value:", header, fvalue).mkString("\n")
   }
 
