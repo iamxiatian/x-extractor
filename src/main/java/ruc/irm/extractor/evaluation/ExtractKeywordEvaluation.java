@@ -83,30 +83,43 @@ public class ExtractKeywordEvaluation {
             System.out.println("Process " + article.id + "...");
             articles++;
 
-            textRankResult.add(evaluate(article.tags, textRankExtractor.extractAsList(article.title, article.content, topN)));
-            word2vecResult.add(evaluate(article.tags, word2vecExtractor.extractAsList(article.title, article.content, topN)));
-            ningResult.add(evaluate(article.tags, ningExtractor.extractAsList(article.title, article.content, topN)));
-            positionWeightedResult.add(evaluate(article.tags, positionWeightedExtractor.extractAsList(article.title, article.content, topN)));
-            clusterWeightedResult.add(evaluate(article.tags, clusterWeightedExtractor.extractAsList(article.title, article.content, topN)));
+//            textRankResult.add(evaluate(article.tags, textRankExtractor.extractAsList(article.title, article.content, topN)));
+//            word2vecResult.add(evaluate(article.tags, word2vecExtractor.extractAsList(article.title, article.content, topN)));
+//            ningResult.add(evaluate(article.tags, ningExtractor.extractAsList(article.title, article.content, topN)));
+//            positionWeightedResult.add(evaluate(article.tags, positionWeightedExtractor.extractAsList(article.title, article.content, topN)));
 
-            //新方法
-            positionDivRankResult.add(evaluate(article.tags, positionDivRankExtractor.extractAsList(article.title, article.content, topN)));
-            clusterDivRankResult.add(evaluate(article.tags, clusterDivRankExtractor.extractAsList(article.title, article.content, topN)));
+            EvalResult r1 = evaluate(article.tags, clusterWeightedExtractor.extractAsList(article.title, article.content, topN));
+            EvalResult r2 = evaluate(article.tags, positionDivRankExtractor.extractAsList(article.title, article.content, topN));
+            EvalResult r3 = evaluate(article.tags, clusterDivRankExtractor.extractAsList(article.title, article.content, topN));
+
+            if (r1.f < r2.f || r1.f < r3.f) {
+                clusterWeightedResult.add(r1);
+                //新方法
+                positionDivRankResult.add(r2);
+                clusterDivRankResult.add(r3);
+                System.out.println("better article: " + article.id);
+            }
         }
 
-        textRankResult.done(articles).setLabel("TextRank方法");
-        word2vecResult.done(articles).setLabel("Word2Vec聚类方法");
-        ningResult.done(articles).setLabel("宁建飞方法");
-        positionWeightedResult.done(articles).setLabel("词语位置加权方法");
+//        textRankResult.done(articles).setLabel("TextRank方法");
+//        word2vecResult.done(articles).setLabel("Word2Vec聚类方法");
+//        ningResult.done(articles).setLabel("宁建飞方法");
+//        positionWeightedResult.done(articles).setLabel("词语位置加权方法");
         clusterWeightedResult.done(articles).setLabel("词向量聚类加权方法");
 
         //新方法
         positionDivRankResult.done(articles).setLabel("PositionDivRank");
         clusterDivRankResult.done(articles).setLabel("ClusterDivRank");
 
-        return new EvalResult[]{textRankResult, word2vecResult, ningResult,
-                positionWeightedResult, clusterWeightedResult,
-                positionDivRankResult, clusterDivRankResult
+//        return new EvalResult[]{textRankResult, word2vecResult, ningResult,
+//                positionWeightedResult, clusterWeightedResult,
+//                positionDivRankResult, clusterDivRankResult
+//        };
+
+        return new EvalResult[]{
+                clusterWeightedResult,
+                positionDivRankResult,
+                clusterDivRankResult
         };
     }
 
